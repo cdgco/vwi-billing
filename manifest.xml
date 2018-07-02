@@ -1,0 +1,18 @@
+<plugin>
+    <!-- App name as seen in menu. -->
+    <name>Billing</name>
+    <!-- Font-Awesome Icon Code. Ex: fa-phone . -->
+    <fa-icon>fa-credit-card</fa-icon>
+    <!-- Section to list app under in menu. "account", "management", "apps" or "administration". Administration is show to admin only. -->
+    <section>administration</section> 
+    <!-- Developer name to be displayed in plugins list. -->
+    <developer>Vesta Web Interface</developer>
+    <!-- Plugin version to be displayed in plugins list. -->
+    <version>0.1.0</version>
+    <!-- Display plugin to admin only? "yes" or "no". -->
+    <admin-only>Yes</admin-only>
+    <!-- Open link in new tab? "yes" or "no" -->
+    <new-tab>No</new-tab>
+    <!-- Hide your plugin from menus? "yes" or "no". -->
+    <hide>No</hide>
+</plugin>
