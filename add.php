@@ -9,18 +9,12 @@ else { header('Location: ../../login.php?to=plugins/vwi-billing/add.php'); }
 
 if(!isset($_GET['package']) || $_GET['package'] == '') { header("Location: index.php"); }
  $postvars = array(
-    array('hash' => $vst_apikey, 'user' => $vst_username,'password' => $vst_password,'cmd' => 'v-list-user','arg1' => $username,'arg2' => 'json'),
-    array('hash' => $vst_apikey, 'user' => $vst_username,'password' => $vst_password,'cmd' => 'v-list-database','arg1' => $username,'arg2' => $requestdb, 'arg3' => 'json'),
-    array('hash' => $vst_apikey, 'user' => $vst_username,'password' => $vst_password,'cmd' => 'v-list-database-types', 'arg1' => 'json'),
-    array('hash' => $vst_apikey, 'user' => $vst_username,'password' => $vst_password,'cmd' => 'v-list-database-hosts', 'arg1' => 'json'));
+    array('hash' => $vst_apikey, 'user' => $vst_username,'password' => $vst_password,'cmd' => 'v-list-user','arg1' => $username,'arg2' => 'json'));
 
 $curl0 = curl_init();
-$curl1 = curl_init();
-$curl2 = curl_init();
-$curl3 = curl_init();
 $curlstart = 0; 
 
-while($curlstart <= 3) {
+while($curlstart <= 0) {
     curl_setopt(${'curl' . $curlstart}, CURLOPT_URL, $vst_url);
     curl_setopt(${'curl' . $curlstart}, CURLOPT_RETURNTRANSFER,true);
     curl_setopt(${'curl' . $curlstart}, CURLOPT_SSL_VERIFYPEER, false);
@@ -32,10 +26,6 @@ while($curlstart <= 3) {
 
 $admindata = json_decode(curl_exec($curl0), true)[$username];
 $useremail = $admindata['CONTACT'];
-$dbname = array_keys(json_decode(curl_exec($curl1), true));
-$dbdata = array_values(json_decode(curl_exec($curl1), true));
-$dbtypes = array_values(json_decode(curl_exec($curl2), true));
-$dbhosts = array_values(json_decode(curl_exec($curl3), true));
 if(isset($admindata['LANGUAGE'])){ $locale = $ulang[$admindata['LANGUAGE']]; }
 setlocale("LC_CTYPE", $locale); setlocale("LC_MESSAGES", $locale);
 bindtextdomain('messages', '../locale');
@@ -164,17 +154,18 @@ foreach ($plugins as $result) {
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="white-box">
-                                <form class="form-horizontal form-material" autocomplete="off" id="form" method="post">
+                                <form class="form-horizontal form-material" autocomplete="off" action="create.php" id="form" method="post">
                                     <div class="form-group">
                                         <label class="col-md-12"><?php echo _("Package"); ?></label>
                                         <div class="col-md-12">
-                                                <input type="text" disabled class="form-control" name="v_database" value="<?php echo $_GET['package']; ?>" required>
+                                                <input type="text" disabled class="form-control" value="<?php echo $_GET['package']; ?>">
+                                            <input type="hidden" name="package" value="<?php echo $_GET['package']; ?>">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-md-12"><?php echo _("Product Name"); ?></label>
                                         <div class="col-md-12">
-                                                <input type="text" class="form-control" pattern="[0-9A-Za-z]" title="Letters & Numbers Only." required>
+                                                <input type="text" class="form-control" name="name" required>
                                                 <small class="form-text text-muted"><?php echo _("This will appear on customers' receipts and invoices."); ?></small>
                                         </div>
                                     </div>
@@ -183,7 +174,7 @@ foreach ($plugins as $result) {
                                         <div class="col-md-12">
                                             <div class="input-group mb-2 mr-sm-2 mb-sm-0">
                                                 <div class="input-group-addon">vwi_prod_</div>
-                                                <input type="text" class="form-control" style="padding-left: 0.5%;" pattern="[0-9A-Za-z]{14,}" title="14 Character Minimum. Letters & Numbers." value="<?php echo randomPassword(); ?>" required>
+                                                <input type="text" class="form-control" style="padding-left: 0.5%;" pattern="[0-9A-Za-z]{14,}" name="id" title="14 Character Minimum. Letters & Numbers." value="<?php echo randomPassword(); ?>" required>
                                             </div>
                                             <small class="form-text text-muted"><?php echo _("Unique Product ID used in Stripe and VWI Backend"); ?></small>
                                         </div>
@@ -191,7 +182,7 @@ foreach ($plugins as $result) {
                                     <div class="form-group">
                                         <label class="col-md-12"><?php echo _("Statement Descriptor (Optional)"); ?></label>
                                         <div class="col-md-12">
-                                                <input type="text" class="form-control">
+                                                <input type="text" class="form-control" name="statement">
                                                 <small class="form-text text-muted"><?php echo _("This will appear on customers' bank statements, so make sure it's clearly recognizable."); ?></small>
                                         </div>
                                     </div>
@@ -351,13 +342,13 @@ foreach ($plugins as $result) {
                                    <div class="form-group">
                                         <label class="col-md-12"><?php echo _("Billing Interval"); ?></label>
                                         <div class="col-md-12">
-                                            <select class="form-control select2">
-                                                <option>Daily</option>
-                                                <option>Weekly</option>
-                                                <option selected>Monthly</option>
-                                                <option>Every 3 Months</option>
-                                                <option>Every 6 Months</option>
-                                                <option>Yearly</option>
+                                            <select class="form-control select2" name="interval">
+                                                <option value="day|1">Daily</option>
+                                                <option value="week|1">Weekly</option>
+                                                <option value="month|1" selected>Monthly</option>
+                                                <option value="month|3">Every 3 Months</option>
+                                                <option value="month|6">Every 6 Months</option>
+                                                <option value="year|1">Yearly</option>
                                             </select>
                                         </div>
                                     </div>
@@ -365,7 +356,7 @@ foreach ($plugins as $result) {
                                         <label class="col-md-12"><?php echo _("Trial (Optional)"); ?></label>
                                         <div class="col-md-12">
                                                 <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-                                                 <input type="text" pattern='\d+' class="form-control">
+                                                 <input type="text" name="trial" pattern='\d+' class="form-control">
                                                  <div class="input-group-addon">days</div>
                                             </div>
                                                 <small class="form-text text-muted"><?php echo _("Subscriptions to this plan will automatically start with a free trial of this length."); ?></small>
@@ -373,8 +364,9 @@ foreach ($plugins as $result) {
                                     </div>
                                     <div class="form-group">
                                         <div class="col-sm-12">
-                                            <button class="btn btn-success" type="submit"><?php echo _("Add Plan"); ?></button> &nbsp;
-                                            <a href="../list/db.php" style="color: inherit;text-decoration: inherit;"><button onclick="loadLoader();" class="btn btn-muted" type="button"><?php echo _("Back"); ?></button></a>
+                                            <?php if(isset($mysqldown) && $mysqldown = 'yes') { echo '<span class="d-inline-block" data-container="body" data-toggle="tooltip" title="MySQL Offline">'; } ?>
+                                            <button type="submit" class="btn btn-success" <?php if(isset($mysqldown) && $mysqldown == 'yes') { echo 'disabled'; } ?>><?php echo _("Add Plan"); ?></button><?php if(isset($mysqldown) && $mysqldown == 'yes') { echo '</span>'; } ?> &nbsp;
+                                            <a href="index.php" style="color: inherit;text-decoration: inherit;"><button onclick="loadLoader();" class="btn btn-muted" type="button"><?php echo _("Back"); ?></button></a>
                                         </div>
                                     </div>
                                 </form>
@@ -419,6 +411,9 @@ foreach ($plugins as $result) {
                 });
             })();
             function checkPrice0(){
+                if(document.getElementById("price-1").value == "") {
+                    document.getElementById("price-1").value = "0";
+                }
                 if(document.getElementById("price-1").value.includes('.') === true) {
                     document.getElementById("price-1").value = document.getElementById("price-1").value.split('.').join('');
                 }
@@ -427,6 +422,9 @@ foreach ($plugins as $result) {
                 }
             }
             function checkPrice1(){
+                if(document.getElementById("price-2").value == "") {
+                    document.getElementById("price-2").value = "0.0";
+                }
                 if(document.getElementById("price-2").value.includes('.') === false && document.getElementById("price-2").value != '0') { 
                     document.getElementById("price-2").value = '0.' + document.getElementById("price-2").value; 
                 }
@@ -438,6 +436,9 @@ foreach ($plugins as $result) {
                 }
             }
             function checkPrice2(){
+                if(document.getElementById("price-3").value == "") {
+                    document.getElementById("price-3").value = "0.00";
+                }
                 if(document.getElementById("price-3").value.includes('.') === false && document.getElementById("price-3").value != '0') { 
                     document.getElementById("price-3").value = '0.' + document.getElementById("price-3").value; 
                 }
@@ -456,26 +457,35 @@ foreach ($plugins as $result) {
                  if (currency == 'bif' || currency == 'cpl' || currency == 'djf' || currency == 'gnf' || currency == 'jpy' || currency == 'kmf' || currency == 'krw' || currency == 'mga' || currency == 'pyg' || currency == 'rwf' || currency == 'vnd' || currency == 'vuv' || currency == 'xaf' || currency == 'xof' || currency == 'xpf') {
                     document.getElementById("price-1").style.display = 'block';
                     document.getElementById("price-1").required = true;
+                    document.getElementById("price-1").name = "amount";
                     document.getElementById("price-2").style.display = 'none';
                     document.getElementById("price-2").required = false;
+                    document.getElementById("price-2").name = "";
                     document.getElementById("price-3").style.display = 'none';
                     document.getElementById("price-3").required = false;
+                    document.getElementById("price-3").name = "";
                 }
                 else if (currency == 'mro') {
                     document.getElementById("price-1").style.display = 'none';
                     document.getElementById("price-1").required = false;
+                    document.getElementById("price-1").name = "";
                     document.getElementById("price-2").style.display = 'block';
                     document.getElementById("price-2").required = true;
+                    document.getElementById("price-2").name = "amount";
                     document.getElementById("price-3").style.display = 'none';
                     document.getElementById("price-3").required = false;
+                    document.getElementById("price-3").name = "";
                 }
                 else {
                     document.getElementById("price-1").style.display = 'none';
                     document.getElementById("price-1").required = false;
+                    document.getElementById("price-1").name = "";
                     document.getElementById("price-2").style.display = 'none';
                     document.getElementById("price-2").required = false;
+                    document.getElementById("price-2").name = "";
                     document.getElementById("price-3").style.display = 'block';
                     document.getElementById("price-3").required = true;
+                    document.getElementById("price-3").name = "amount";
                     
                 }
                 
@@ -547,6 +557,9 @@ foreach ($plugins as $result) {
             
             if(isset($_GET['error']) && $_GET['error'] == "1") {
                 echo "swal({title:'" . $errorcode[1] . "<br><br>" . _("Please try again or contact support.") . "', type:'error'});";
+            } 
+            if(isset($_GET['err']) && $_GET['err'] != "") {
+                echo "swal({title:'Stripe Error: " . $_GET['err'] . "<br><br>" . _("Please try again or contact support.") . "', type:'error'});";
             } 
             ?>
                         document.addEventListener('DOMContentLoaded', function(e) {

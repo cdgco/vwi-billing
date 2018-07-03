@@ -16,8 +16,8 @@ if($configstyle != '2') {
     mysqli_free_result($billingresult); mysqli_close($con);
     
     $con=mysqli_connect($mysql_server,$mysql_uname,$mysql_pw,$mysql_db);
-    $billingplans = array(); $billingresult2=mysqli_query($con,"SELECT PACKAGE,PLAN FROM `" . $mysql_table . "billing-plans`");
-    while ($bprow = mysqli_fetch_assoc($billingresult2)) { $billingplans[$bprow["PACKAGE"]] = $bprow["PLAN"]; }
+    $billingplans = array(); $billingresult2=mysqli_query($con,"SELECT PACKAGE,ID FROM `" . $mysql_table . "billing-plans`");
+    while ($bprow = mysqli_fetch_assoc($billingresult2)) { $billingplans[$bprow["PACKAGE"]] = $bprow["ID"]; }
     mysqli_free_result($billingresult2); mysqli_close($con);
 }
 else {
@@ -26,7 +26,7 @@ else {
                  $billingplans = json_decode(file_get_contents( $co1 . 'billingplans.json'), true); }
     else { 
         $con=mysqli_connect($mysql_server,$mysql_uname,$mysql_pw,$mysql_db);
-        $billingconfig = array(); $billingresult=mysqli_query($con,"SELECT PACKAGE,PLAN FROM `" . $mysql_table . "billing-config`");
+        $billingconfig = array(); $billingresult=mysqli_query($con,"SELECT VARIABLE,VALUE FROM `" . $mysql_table . "billing-config`");
         while ($bcrow = mysqli_fetch_assoc($billingresult)) { $billingconfig[$bcrow["VARIABLE"]] = $bcrow["VALUE"]; }
         mysqli_free_result($billingresult); mysqli_close($con);
         if (!file_exists( $co1 . 'billingconfig.json' )) { 
@@ -37,8 +37,8 @@ else {
         }
         
         $con=mysqli_connect($mysql_server,$mysql_uname,$mysql_pw,$mysql_db);
-        $billingplans = array(); $billingresult2=mysqli_query($con,"SELECT PACKAGE,PLAN FROM `" . $mysql_table . "billing-plans`");
-        while ($bprow = mysqli_fetch_assoc($billingresult2)) { $billingconfig2[$bprow["PACKAGE"]] = $bcrow["PLAN"]; }
+        $billingplans = array(); $billingresult2=mysqli_query($con,"SELECT PACKAGE,ID FROM `" . $mysql_table . "billing-plans`");
+        while ($bprow = mysqli_fetch_assoc($billingresult2)) { $billingconfig2[$bprow["PACKAGE"]] = $bcrow["ID"]; }
         mysqli_free_result($billingresult2); mysqli_close($con);
         if (!file_exists( $co1 . 'billingplans.json' )) { 
             file_put_contents( $co1 . "billingplans.json",json_encode($billingplans));
@@ -49,7 +49,6 @@ else {
         
     }
 }
-
 \Stripe\Stripe::setApiKey($billingconfig['KEY']);
 
 $postvars = array(
@@ -117,7 +116,8 @@ foreach ($plugins as $result) {
         <link href="../../bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="../../plugins/components/sidebar-nav/dist/sidebar-nav.min.css" rel="stylesheet">
         <link href="../../plugins/components/footable/css/footable.bootstrap.css" rel="stylesheet">
-        <link href="../../plugins/components/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
+        <link href="../../plugins/components/bootstrap-select/bootstrap-select.min.css" 
+              rel="stylesheet">
         <link href="../../plugins/components/custom-select/custom-select.css" rel="stylesheet">
         <link href="../../css/animate.css" rel="stylesheet">
         <link href="../../css/style.css" rel="stylesheet">
@@ -208,7 +208,7 @@ foreach ($plugins as $result) {
                                     <thead>
                                         <tr>
                                             <th><?php echo _("Package"); ?></th>
-                                            <th><?php echo _("Plan Name"); ?></th>
+                                            <th><?php echo _("Product Name"); ?></th>
                                             <th><?php echo _("Price"); ?></th>
                                             <th><?php echo _("Trial"); ?></th>
                                             <th><?php echo _("Created"); ?></th>
@@ -223,48 +223,53 @@ foreach ($plugins as $result) {
                                             do {
                                                 $searchpackage = array_search($packname[$x1], $sqlpackages);
                                                 if(strpos($sqlpackages[$searchpackage], $packname[$x1]) !== false ) {
-                                                    try { $currentplan = \Stripe\Plan::retrieve($sqlplans[$searchpackage])->__toArray(true); } 
+                                                    try { $currentplan = \Stripe\Plan::retrieve('vwi_plan_' . $sqlplans[$searchpackage])->__toArray(true); } 
                                                     catch (\Stripe\Error\Base $e) { $err = $e->getJsonBody()['error']['code']; }
                                                     if(isset($err) || $err != '') {}
                                                     else {
-                                                        echo '<tr>
-                                                            <td>' . $packname[$x1] . '</td>
-                                                            <td>' . $currentplan['nickname'] . '</td>
-                                                            <td>';
-                                                        
-                                                        if($currentplan['currency'] == "usd"){
-                                                            echo '$' . number_format(($currentplan['amount']/100), 2, '.', ' ') . ' / ';
-                                                            if ($currentplan['interval_count'] > 1) {
-                                                                echo $currentplan['interval_count'] . ' ';
-                                                            }
-                                                            echo $currentplan['interval'];
-                                                        
-                                                            if ($currentplan['interval_count'] > 1) {
-                                                                echo 's';
-                                                            }
-                                                        }
+                                                        try { $currentproduct = \Stripe\Product::retrieve('vwi_prod_' . $sqlplans[$searchpackage])->__toArray(true); } 
+                                                        catch (\Stripe\Error\Base $e) { $err = $e->getJsonBody()['error']['code']; }
+                                                        if(isset($err) || $err != '') {}
                                                         else {
-                                                           echo $currentplan['amount'] . ' ' . $currentplan['currency'] . ' / ';
-                                                            if ($currentplan['interval_count'] > 1) {
-                                                                echo $currentplan['interval_count'] . ' ';
+                                                            echo '<tr>
+                                                                <td>' . $packname[$x1] . '</td>
+                                                                <td>' . $currentproduct['name'] . '</td>
+                                                                <td>';
+
+                                                            if($currentplan['currency'] == "usd"){
+                                                                echo '$' . number_format(($currentplan['amount']/100), 2, '.', ' ') . ' / ';
+                                                                if ($currentplan['interval_count'] > 1) {
+                                                                    echo $currentplan['interval_count'] . ' ';
+                                                                }
+                                                                echo $currentplan['interval'];
+
+                                                                if ($currentplan['interval_count'] > 1) {
+                                                                    echo 's';
+                                                                }
                                                             }
-                                                            echo $currentplan['interval'];
-                                                            
-                                                            if ($currentplan['interval_count'] > 1) {
-                                                                echo 's';
+                                                            else {
+                                                               echo $currentplan['amount'] . ' ' . $currentplan['currency'] . ' / ';
+                                                                if ($currentplan['interval_count'] > 1) {
+                                                                    echo $currentplan['interval_count'] . ' ';
+                                                                }
+                                                                echo $currentplan['interval'];
+
+                                                                if ($currentplan['interval_count'] > 1) {
+                                                                    echo 's';
+                                                                }
                                                             }
+                                                            echo '</td>
+                                                                <td>'; if(!is_null($currentplan['trial_period_days']) && isset($currentplan['trial_period_days']) && $currentplan['trial_period_days'] != ''){
+                                                                    echo $currentplan['trial_period_days'] . ' days';
+                                                                }
+                                                            else { echo 'Disabled'; }
+                                                            echo '</td>
+                                                                <td>' . date("Y-d-m", $currentplan['created']) . '</td>
+                                                                <td><a href="edit.php?package=' . $packname[$x1] . '"><button type="button" data-toggle="tooltip" data-original-title="' . _("Edit") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="fa fa-edit"></i></button></a><span>
+                                                                <button onclick="confirmDeactivate(\'' . $packname[$x1] . '\')" type="button" data-toggle="tooltip" data-original-title="' . _("Deactivate") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="fa fa-times"></i></button>
+                                                            </td>
+                                                            </tr>'; 
                                                         }
-                                                        echo '</td>
-                                                            <td>'; if(!is_null($currentplan['trial_period_days']) && isset($currentplan['trial_period_days']) && $currentplan['trial_period_days'] != ''){
-                                                                echo $currentplan['trial_period_days'] . ' days';
-                                                            }
-                                                        else { echo 'Disabled'; }
-                                                        echo '</td>
-                                                            <td>' . date("Y-d-m", $currentplan['created']) . '</td>
-                                                            <td><a href="edit.php?package=' . $packname[$x1] . '"><button type="button" data-toggle="tooltip" data-original-title="' . _("Edit") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="fa fa-edit"></i></button></a><span>
-                                                            <button onclick="confirmDeactivate(\'' . $packname[$x1] . '\')" type="button" data-toggle="tooltip" data-original-title="' . _("Deactivate") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="fa fa-times"></i></button>
-                                                        </td>
-                                                        </tr>'; 
                                                     }
                                                 }
                                                 $x1++;
@@ -362,7 +367,14 @@ foreach ($plugins as $result) {
             
             includeScript();
             
-            $pluginlocation = "../"; if(isset($pluginnames[0]) && $pluginnames[0] != '') { $currentplugin = 0; do { if (strtolower($pluginhide[$currentplugin]) != 'y' && strtolower($pluginhide[$currentplugin]) != 'yes') { if (strtolower($pluginadminonly[$currentplugin]) != 'y' && strtolower($pluginadminonly[$currentplugin]) != 'yes') { if (strtolower($pluginnewtab[$currentplugin]) == 'y' || strtolower($pluginnewtab[$currentplugin]) == 'yes') { $currentstring = "<li><a href='" . $pluginlocation . $pluginlinks[$currentplugin] . "/' target='_blank'><i class='fa " . $pluginicons[$currentplugin] . " fa-fw'></i><span class='hide-menu'>" . _($pluginnames[$currentplugin] ) . "</span></a></li>"; } else { $currentstring = "<li><a href='".$pluginlocation.$pluginlinks[$currentplugin]."/'><i class='fa ".$pluginicons[$currentplugin]." fa-fw'></i><span class='hide-menu'>"._($pluginnames[$currentplugin])."</span></a></li>"; }} else { if(strtolower($pluginnewtab[$currentplugin]) == 'y' || strtolower($pluginnewtab[$currentplugin]) == 'yes') { if($username == 'admin') { $currentstring = "<li><a href='" . $pluginlocation . $pluginlinks[$currentplugin] . "/' target='_blank'><i class='fa " . $pluginicons[$currentplugin] . " fa-fw'></i><span class='hide-menu'>" . _($pluginnames[$currentplugin] ) . "</span></a></li>";} } else { if($username == 'admin') { $currentstring = "<li><a href='" . $pluginlocation . $pluginlinks[$currentplugin] . "/'><i class='fa " . $pluginicons[$currentplugin] . " fa-fw'></i><span class='hide-menu'>" . _($pluginnames[$currentplugin] ) . "</span></a></li>"; }}} echo "var plugincontainer" . $currentplugin . " = document.getElementById ('append" . $pluginsections[$currentplugin] . "');\n var plugindata" . $currentplugin . " = \"" . $currentstring . "\";\n plugincontainer" . $currentplugin . ".innerHTML += plugindata" . $currentplugin . ";\n"; } $currentplugin++; } while ($pluginnames[$currentplugin] != ''); } ?>
+            $pluginlocation = "../"; if(isset($pluginnames[0]) && $pluginnames[0] != '') { $currentplugin = 0; do { if (strtolower($pluginhide[$currentplugin]) != 'y' && strtolower($pluginhide[$currentplugin]) != 'yes') { if (strtolower($pluginadminonly[$currentplugin]) != 'y' && strtolower($pluginadminonly[$currentplugin]) != 'yes') { if (strtolower($pluginnewtab[$currentplugin]) == 'y' || strtolower($pluginnewtab[$currentplugin]) == 'yes') { $currentstring = "<li><a href='" . $pluginlocation . $pluginlinks[$currentplugin] . "/' target='_blank'><i class='fa " . $pluginicons[$currentplugin] . " fa-fw'></i><span class='hide-menu'>" . _($pluginnames[$currentplugin] ) . "</span></a></li>"; } else { $currentstring = "<li><a href='".$pluginlocation.$pluginlinks[$currentplugin]."/'><i class='fa ".$pluginicons[$currentplugin]." fa-fw'></i><span class='hide-menu'>"._($pluginnames[$currentplugin])."</span></a></li>"; }} else { if(strtolower($pluginnewtab[$currentplugin]) == 'y' || strtolower($pluginnewtab[$currentplugin]) == 'yes') { if($username == 'admin') { $currentstring = "<li><a href='" . $pluginlocation . $pluginlinks[$currentplugin] . "/' target='_blank'><i class='fa " . $pluginicons[$currentplugin] . " fa-fw'></i><span class='hide-menu'>" . _($pluginnames[$currentplugin] ) . "</span></a></li>";} } else { if($username == 'admin') { $currentstring = "<li><a href='" . $pluginlocation . $pluginlinks[$currentplugin] . "/'><i class='fa " . $pluginicons[$currentplugin] . " fa-fw'></i><span class='hide-menu'>" . _($pluginnames[$currentplugin] ) . "</span></a></li>"; }}} echo "var plugincontainer" . $currentplugin . " = document.getElementById ('append" . $pluginsections[$currentplugin] . "');\n var plugindata" . $currentplugin . " = \"" . $currentstring . "\";\n plugincontainer" . $currentplugin . ".innerHTML += plugindata" . $currentplugin . ";\n"; } $currentplugin++; } while ($pluginnames[$currentplugin] != ''); }
+            
+            if(isset($_POST['a1']) && $_POST['a1'] == "0") {
+                echo "swal({title:'" . _("Successfully Created!") . "', type:'success'});";
+            } 
+            if(isset($_POST['a1']) && $_POST['a1'] > "0") { echo "swal({title:'Error Creating Plan.<br>Please Try Again.', type:'error'});";
+                                                          }
+            ?>
         </script>
     </body>
 </html>
