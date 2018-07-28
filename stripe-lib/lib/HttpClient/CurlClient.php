@@ -22,6 +22,10 @@ if (!defined('CURL_SSLVERSION_TLSv1_2')) {
 }
 // @codingStandardsIgnoreEnd
 
+if (!defined('CURL_HTTP_VERSION_2TLS')) {
+    define('CURL_HTTP_VERSION_2TLS', 4);
+}
+
 class CurlClient implements ClientInterface
 {
     private static $instance;
@@ -192,6 +196,9 @@ class CurlClient implements ClientInterface
         if (!Stripe::getVerifySslCerts()) {
             $opts[CURLOPT_SSL_VERIFYPEER] = false;
         }
+
+        // For HTTPS requests, enable HTTP/2, if supported
+        $opts[CURLOPT_HTTP_VERSION] = CURL_HTTP_VERSION_2TLS;
 
         list($rbody, $rcode) = $this->executeRequestWithRetries($opts, $absUrl);
 
