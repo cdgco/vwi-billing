@@ -9,6 +9,9 @@ else { header('Location: ../../login.php?to=plugins/vwi-billing'); }
 
 require("stripe-lib/init.php");
 
+if($username != 'admin') { header("Location: ../../../"); }
+if(!isset($_GET['plan']) || $_GET['plan'] == ''){ header("Location: index.php?error=1"); }
+if(!isset($_GET['id']) || $_GET['id'] == ''){ header("Location: index.php?error=1"); }
 if($configstyle != '2') {
     $con=mysqli_connect($mysql_server,$mysql_uname,$mysql_pw,$mysql_db);
     $billingconfig = array(); $billingresult=mysqli_query($con,"SELECT VARIABLE,VALUE FROM `" . $mysql_table . "billing-config`");
@@ -26,7 +29,7 @@ else {
                  $billingplans = json_decode(file_get_contents( $co1 . 'billingplans.json'), true); }
     else { 
         $con=mysqli_connect($mysql_server,$mysql_uname,$mysql_pw,$mysql_db);
-        $billingconfig = array(); $billingresult=mysqli_query($con,"SELECT VARIABLE,VALUE FROM `" . $mysql_table . "billing-config`");
+        $billingconfig = array(); $billingresult=mysqli_query($con,"SELECT PACKAGE,PLAN FROM `" . $mysql_table . "billing-config`");
         while ($bcrow = mysqli_fetch_assoc($billingresult)) { $billingconfig[$bcrow["VARIABLE"]] = $bcrow["VALUE"]; }
         mysqli_free_result($billingresult); mysqli_close($con);
         if (!file_exists( $co1 . 'billingconfig.json' )) { 
@@ -49,70 +52,43 @@ else {
         
     }
 }
+$r1 = 0;
+$plansdata = array_keys($billingplans);
+if( strpos( $plansdata[array_search($_GET['plan'], $plansdata)], $_GET['plan']) !== false ) {
+    if($configstyle != '2') {
+        $con=mysqli_connect($mysql_server,$mysql_uname,$mysql_pw,$mysql_db);
+        $currentplan = mysqli_real_escape_string($con, $_GET['plan']);
+        $sql1 = "DELETE FROM `" . $mysql_table . "billing-plans` WHERE `PACKAGE` = '" . $currentplan . "';";
+        if (mysqli_query($con, $sql1)) {} else { $r1 = 1; }
+        mysqli_close($con);
+    }
+    else {
+        if (!$con) { $r1 = 2; }
+        else { 
+            $con=mysqli_connect($mysql_server,$mysql_uname,$mysql_pw,$mysql_db);
+            $currentplan = mysqli_real_escape_string($con, $_GET['plan']);
+            $sql1 = "DELETE FROM `" . $mysql_table . "billing-plans` WHERE `PACKAGE` = '" . $currentplan . "';";
+            if (mysqli_query($con, $sql1)) {} else { $r1 = 1; }
+            mysqli_close($con);
+
+        }
+    }  
+}
 
 \Stripe\Stripe::setApiKey($billingconfig['KEY']);
 
-$sqlplans = array_values($billingplans);
-$sqlpackages = array_keys($billingplans);
-$interval = explode("|", $_POST['interval']);
-
-if(isset($_POST['trial']) && $_POST['trial'] != ''){
-    $trial = intval($_POST['trial']);
-}
-else {
-    $trial = null;
-}
-if(isset($_POST['statement']) && $_POST['statement'] != ''){
-    $statement = intval($_POST['statement']);
-}
-else {
-    $statement = null;
-}
-if (isset($_POST['package']) && $_POST['package'] != ''){
-    if (isset($_POST['name']) && $_POST['name'] != '' && isset($_POST['id']) && $_POST['id'] != '' && isset($_POST['amount']) && $_POST['amount'] != '' && isset($_POST['interval']) && $_POST['interval'] != '' && isset($_POST['currency']) && $_POST['currency'] != ''){
-        try { 
-            \Stripe\Product::create(array(
-              "name" => $_POST['name'],
-              "type" => "service",
-              "id" => "vwi_prod_" . $_POST['id'],
-              "statement_descriptor" => $statement
-            )); 
-        } 
-        catch (\Stripe\Error\Base $e) { $err = $e->getJsonBody()['error']['code']; }
-        if(isset($err) || $err != '') {
-           header("Location: add.php?err=" . $err . "&package=" . $_POST['package']);
-        }
-        else {
-            try { 
-                \Stripe\Plan::create(array(
-                  "amount" => intval(str_replace(".","", $_POST['amount'])),
-                  "id" => "vwi_plan_" . $_POST['id'],
-                  "interval" => $interval[0],
-                  "interval_count" => intval($interval[1]),
-                  "product" => "vwi_prod_" . $_POST['id'],
-                  "currency" => $_POST['currency'],
-                  "trial_period_days" => $trial,
-                ));
-            }
-            catch (\Stripe\Error\Base $e) { $err = $e->getJsonBody()['error']['code']; }
-            if(isset($err) || $err != '') {
-                header("Location: add.php?err=" . $err . "&package=" . $_POST['package']);
-            }
-            else {
-                $r1 = 0;
-                $con=mysqli_connect($mysql_server,$mysql_uname,$mysql_pw,$mysql_db);
-                $v1 = mysqli_real_escape_string($con, $_POST['package']);
-                $v2 = mysqli_real_escape_string($con, $_POST['id']);
-                $addtotable= "INSERT INTO `" . $mysql_table . "billing-plans` (PACKAGE, ID) VALUES ('".$v1."','".$v2."') ON DUPLICATE KEY UPDATE ID='".$v2."';";
-                if (mysqli_query($con, $addtotable)) {} else { $r1 = $r1 + 1; }
-                mysqli_close($con);
-
-            }
-        }
+try { $currentplan = \Stripe\Plan::retrieve('vwi_plan_' . $_GET['id']); } 
+catch (\Stripe\Error\Base $e) { $err = $e->getJsonBody()['error']['code']; }
+if(isset($err) || $err != '') {}
+else {      
+    $currentplan->delete();
+    try { $currentprod = \Stripe\Product::retrieve('vwi_prod_' . $_GET['id']); } 
+    catch (\Stripe\Error\Base $e) { $err = $e->getJsonBody()['error']['code']; }
+    if(isset($err) || $err != '') {}
+    else {
+        $currentprod->delete();
     }
-    else { header("Location: add.php?error=1&package=" . $_POST['package']); }
 }
-else { header("Location: index.php?error=1"); }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -128,7 +104,7 @@ else { header("Location: index.php?error=1"); }
 
         <form id="form" action="index.php" method="post">
             <?php 
-            echo '<input type="hidden" name="a1" value="'.$r1.'">';
+            echo '<input type="hidden" name="d1" value="'.$r1.'">';
             ?>
         </form>
         <script type="text/javascript">

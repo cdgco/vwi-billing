@@ -220,60 +220,61 @@ foreach ($plugins as $result) {
                                         if($packname[0] != '') { 
                                             $x1 = 0; 
 
-                                            do {
-                                                $searchpackage = array_search($packname[$x1], $sqlpackages);
-                                                if(strpos($sqlpackages[$searchpackage], $packname[$x1]) !== false ) {
-                                                    try { $currentplan = \Stripe\Plan::retrieve('vwi_plan_' . $sqlplans[$searchpackage])->__toArray(true); } 
-                                                    catch (\Stripe\Error\Base $e) { $err = $e->getJsonBody()['error']['code']; }
-                                                    if(isset($err) || $err != '') {}
-                                                    else {
-                                                        try { $currentproduct = \Stripe\Product::retrieve('vwi_prod_' . $sqlplans[$searchpackage])->__toArray(true); } 
-                                                        catch (\Stripe\Error\Base $e) { $err = $e->getJsonBody()['error']['code']; }
-                                                        if(isset($err) || $err != '') {}
-                                                        else {
-                                                            echo '<tr>
-                                                                <td>' . $packname[$x1] . '</td>
-                                                                <td>' . $currentproduct['name'] . '</td>
-                                                                <td>';
+    do {
+        $searchpackage = array_search($packname[$x1], $sqlpackages);
+        if(strpos($sqlpackages[$searchpackage], $packname[$x1]) !== false ) {
+            try { $currentplan = \Stripe\Plan::retrieve('vwi_plan_' . $sqlplans[$searchpackage])->__toArray(true); } 
+            catch (\Stripe\Error\Base $e) { $err = $e->getJsonBody()['error']['code']; }
+            if(isset($err) || $err != '') {}
+            else {
+                try { $currentproduct = \Stripe\Product::retrieve('vwi_prod_' . $sqlplans[$searchpackage])->__toArray(true); } 
+                catch (\Stripe\Error\Base $e) { $err = $e->getJsonBody()['error']['code']; }
+                if(isset($err) || $err != '') {}
+                else {
+                    echo '<tr>
+                        <td>' . $packname[$x1] . '</td>
+                        <td>' . $currentproduct['name'] . '</td>
+                        <td>';
+                    
+                    if($currentplan['currency'] == "aed" || $currentplan['currency'] == "afn" || $currentplan['currency'] == "dkk" || $currentplan['currency'] == "dzd" || $currentplan['currency'] == "egp" || $currentplan['currency'] == "lbp" || $currentplan['currency'] == "mad" || $currentplan['currency'] == "nok" || $currentplan['currency'] == "qar" || $currentplan['currency'] == "sar" || $currentplan['currency'] == "sek" || $currentplan['currency'] == "yer"){
+                        echo number_format(($currentplan['amount']/100), 2, '.', ' ') . ' ' .  $currencies[$currentplan['currency']];
+                    }
+                    elseif($currentplan['currency'] == "bif" || $currentplan['currency'] == "clp" || $currentplan['currency'] == "djf" || $currentplan['currency'] == "gnf" || $currentplan['currency'] == "jpy" || $currentplan['currency'] == "kmf" || $currentplan['currency'] == "krw" || $currentplan['currency'] == "mga" || $currentplan['currency'] == "pyg" || $currentplan['currency'] == "rwf" || $currentplan['currency'] == "vnd" || $currentplan['currency'] == "vuv" || $currentplan['currency'] == "xaf" || $currentplan['currency'] == "xof" || $currentplan['currency'] == "xpf"){
+                        echo $currencies[$currentplan['currency']] . ' ' . $currentplan['amount'];
+                    }
+                    elseif($currentplan['currency'] == "mro"){
+                        echo $currencies[$currentplan['currency']] . ' ' .  number_format(($currentplan['amount']/10), 1, '.', ' ');
+                    }
+                    else {
+                       echo $currencies[$currentplan['currency']] . ' ' . $currentplan['amount'] . ' ' .  strtoupper($currentplan['currency']);
+                    }
+                    echo ' / ';
 
-                                                            if($currentplan['currency'] == "usd"){
-                                                                echo '$' . number_format(($currentplan['amount']/100), 2, '.', ' ') . ' / ';
-                                                                if ($currentplan['interval_count'] > 1) {
-                                                                    echo $currentplan['interval_count'] . ' ';
-                                                                }
-                                                                echo $currentplan['interval'];
+                    if ($currentplan['interval_count'] > 1) {
+                            echo $currentplan['interval_count'] . ' ';
+                        }
+                        echo $currentplan['interval'];
 
-                                                                if ($currentplan['interval_count'] > 1) {
-                                                                    echo 's';
-                                                                }
-                                                            }
-                                                            else {
-                                                               echo $currentplan['amount'] . ' ' . $currentplan['currency'] . ' / ';
-                                                                if ($currentplan['interval_count'] > 1) {
-                                                                    echo $currentplan['interval_count'] . ' ';
-                                                                }
-                                                                echo $currentplan['interval'];
+                        if ($currentplan['interval_count'] > 1) {
+                            echo 's';
+                        }
 
-                                                                if ($currentplan['interval_count'] > 1) {
-                                                                    echo 's';
-                                                                }
-                                                            }
-                                                            echo '</td>
-                                                                <td>'; if(!is_null($currentplan['trial_period_days']) && isset($currentplan['trial_period_days']) && $currentplan['trial_period_days'] != ''){
-                                                                    echo $currentplan['trial_period_days'] . ' days';
-                                                                }
-                                                            else { echo 'Disabled'; }
-                                                            echo '</td>
-                                                                <td>' . date("Y-d-m", $currentplan['created']) . '</td>
-                                                                <td><a href="edit.php?package=' . $packname[$x1] . '"><button type="button" data-toggle="tooltip" data-original-title="' . _("Edit") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="fa fa-edit"></i></button></a><span>
-                                                                <button onclick="confirmDeactivate(\'' . $packname[$x1] . '\')" type="button" data-toggle="tooltip" data-original-title="' . _("Deactivate") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="fa fa-times"></i></button>
-                                                            </td>
-                                                            </tr>'; 
-                                                        }
-                                                    }
-                                                }
-                                                $x1++;
-                                            } while (isset($packname[$x1])); }
+                    echo '</td>
+                        <td>'; if(!is_null($currentplan['trial_period_days']) && isset($currentplan['trial_period_days']) && $currentplan['trial_period_days'] != ''){
+                            echo $currentplan['trial_period_days'] . ' days';
+                        }
+                    else { echo 'Disabled'; }
+                    echo '</td>
+                        <td>' . date("Y-d-m", $currentplan['created']) . '</td>
+                        <td><a href="edit.php?package=' . $packname[$x1] . '"><button type="button" data-toggle="tooltip" data-original-title="' . _("Edit") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="fa fa-edit"></i></button></a><span>
+                        <button onclick="confirmDeactivate(\'' . $packname[$x1] . '\', \'' . $sqlplans[$searchpackage] . '\')" type="button" data-toggle="tooltip" data-original-title="' . _("Deactivate") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="fa fa-times"></i></button>
+                    </td>
+                    </tr>'; 
+                }
+            }
+        }
+        $x1++;
+    } while (isset($packname[$x1])); }
                                         ?>
                                     </tbody>
                                 </table>
@@ -339,8 +340,9 @@ foreach ($plugins as $result) {
             jQuery(function($){
                 $('.footable').footable();
             });
-            function confirmDeactivate(e){
-                e1 = String(e)
+            function confirmDeactivate(e, f){
+                e1 = String(e);
+                f1 = String(f);
                 swal({
                     title: '<?php echo _("Deactivate Plan:"); ?> ' + e1 + ' ?',
                     text: "<?php echo _("You won't be able to revert this!"); ?>",
@@ -360,7 +362,7 @@ foreach ($plugins as $result) {
                         function () {},
                         function (dismiss) {}
                     )
-                    window.location.replace("delete.php?package=" + e1);
+                    window.location.replace("delete.php?plan=" + e1 + "&id=" + f1);
                 })}
 
             <?php 
