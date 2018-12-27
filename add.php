@@ -61,21 +61,21 @@ foreach ($plugins as $result) {
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="">
-        <meta name="author" content="">
         <link rel="icon" type="image/ico" href="../images/<?php echo $cpfavicon; ?>">
         <title><?php echo $sitetitle; ?> - <?php echo _("Billing"); ?></title>
-        <link href="../../bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link href="../components/sidebar-nav/dist/sidebar-nav.min.css" rel="stylesheet">
-        <link href="../components/footable/css/footable.bootstrap.css" rel="stylesheet">
-        <link href="../components/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
-        <link href="../components/custom-select/custom-select.css" rel="stylesheet">
-        <link href="../../css/animate.css" rel="stylesheet">
+        <link href="../components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="../components/jquery-toast-plugin/jquery.toast.min.css" rel="stylesheet">
+        <link href="../components/metismenu/dist/metisMenu.min.css" rel="stylesheet">
+        <link href="../components/select2/select2.min.css" rel="stylesheet">
+        <link href="../components/animate.css/animate.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="../components/sweetalert2/sweetalert2.min.css" />
+        <link href="../components/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet"/>
+        <link href="../components/select2/select2.min.css" rel="stylesheet"/>
+        <link href="../components/footable/footable.bootstrap.min.css" rel="stylesheet"/>
+        <link href="../components/bootstrapvalidator/bootstrapValidator.css" rel="stylesheet"/>
         <link href="../../css/style.css" rel="stylesheet">
-        <link href="../components/toast-master/css/jquery.toast.css" rel="stylesheet">
-        <link href="../../css/colors/<?php if(isset($_COOKIE['theme'])) { echo base64_decode($_COOKIE['theme']); } else {echo $themecolor; } ?>" id="theme" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.11.5/sweetalert2.min.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/css/bootstrapValidator.min.css" />
+        <link href="../../css/colors/<?php if(isset($_COOKIE['theme']) && $themecolor != 'custom.css') { echo base64_decode($_COOKIE['theme']); } else {echo $themecolor; } ?>" id="theme" rel="stylesheet">
+        <?php if($themecolor == "custom.css") { require( '../../css/colors/custom.php'); } ?>
         <?php if(GOOGLE_ANALYTICS_ID != ''){ echo "<script async src='https://www.googletagmanager.com/gtag/js?id=" . GOOGLE_ANALYTICS_ID . "'></script>
         <script>window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '" . GOOGLE_ANALYTICS_ID . "');</script>"; } ?> 
         <!--[if lt IE 9]>
@@ -103,7 +103,10 @@ foreach ($plugins as $result) {
                         <li><a href="javascript:void(0)" class="open-close waves-effect waves-light visible-xs"><i class="ti-close ti-menu"></i></a></li>      
                     </ul>
                     <ul class="nav navbar-top-links navbar-right pull-right">
-
+                        <li>
+                            <form class="app-search m-r-10" id="searchform" action="../../process/search.php" method="get">
+                                <input type="text" placeholder="<?php echo _("Search..."); ?>" class="form-control" name="q"> <a href="javascript:void(0);" onclick="document.getElementById('searchform').submit();"><i class="fa fa-search"></i></a> </form>
+                        </li>
                         <li class="dropdown">
                             <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#"><b class="hidden-xs"><?php print_r($displayname); ?></b><span class="caret"></span> </a>
                             <ul class="dropdown-menu dropdown-user animated flipInY">
@@ -382,23 +385,20 @@ foreach ($plugins as $result) {
                 <footer class="footer text-center">&copy; <?php echo date("Y") . ' ' . $sitetitle; ?>. <?php echo _("Vesta Web Interface"); ?> <?php require '../../includes/versioncheck.php'; ?> <?php echo _("by Carter Roeser"); ?>.</footer>
             </div>
         </div>
-        <script src="../components/jquery/dist/jquery.min.js"></script>
-        <script src="../components/toast-master/js/jquery.toast.js"></script>
-        <script src="../../bootstrap/dist/js/bootstrap.min.js"></script>
-        <script src="../components/sidebar-nav/dist/sidebar-nav.min.js"></script>
-        <script src="../../js/jquery.slimscroll.js"></script>
-        <script src="../../js/waves.js"></script>
-        <script src="../components/moment/moment.js"></script>
-        <script src="../components/footable/js/footable.min.js"></script>
-        <script src="../components/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
-        <script src="../components/custom-select/custom-select.min.js"></script>
-        <script src="../../js/footable-init.js"></script>
-        <script src="../../js/custom.js"></script>
-        <script src="../../js/dashboard1.js"></script>
-        <script src="../../js/cbpFWTabs.js"></script>
-        <script src="../components/styleswitcher/jQuery.style.switcher.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.11.5/sweetalert2.all.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.min.js"></script>
+        <script src="../components/jquery/jquery.min.js"></script>
+        <script src="../components/jquery-toast-plugin/jquery.toast.min.js"></script>
+        <script src="../components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+        <script src="../components/sweetalert2/sweetalert2.min.js"></script>
+        <script src="../components/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="../components/metismenu/dist/metisMenu.min.js"></script>
+        <script src="../components/select2/select2.min.js"></script>
+        <script src="../components/waves/waves.js"></script>
+        <script src="../components/footable/footable.min.js"></script>
+        <script src="../components/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+        <script src="../components/select2/select2.min.js"></script>
+        <script src="../components/bootstrap-select/js/bootstrap-select.min.js"></script>
+        <script src="../components/bootstrapvalidator/bootstrapValidator.js"></script>
+        <script src="../../js/main.js"></script>
         <script type="text/javascript">
             <?php 
             $pluginlocation = "../"; if(isset($pluginnames[0]) && $pluginnames[0] != '') { $currentplugin = 0; do { if (strtolower($pluginhide[$currentplugin]) != 'y' && strtolower($pluginhide[$currentplugin]) != 'yes') { if (strtolower($pluginadminonly[$currentplugin]) != 'y' && strtolower($pluginadminonly[$currentplugin]) != 'yes') { if (strtolower($pluginnewtab[$currentplugin]) == 'y' || strtolower($pluginnewtab[$currentplugin]) == 'yes') { $currentstring = "<li><a href='" . $pluginlocation . $pluginlinks[$currentplugin] . "/' target='_blank'><i class='fa " . $pluginicons[$currentplugin] . " fa-fw'></i><span class='hide-menu'>" . _($pluginnames[$currentplugin] ) . "</span></a></li>"; } else { $currentstring = "<li><a href='".$pluginlocation.$pluginlinks[$currentplugin]."/'><i class='fa ".$pluginicons[$currentplugin]." fa-fw'></i><span class='hide-menu'>"._($pluginnames[$currentplugin])."</span></a></li>"; }} else { if(strtolower($pluginnewtab[$currentplugin]) == 'y' || strtolower($pluginnewtab[$currentplugin]) == 'yes') { if($username == 'admin') { $currentstring = "<li><a href='" . $pluginlocation . $pluginlinks[$currentplugin] . "/' target='_blank'><i class='fa " . $pluginicons[$currentplugin] . " fa-fw'></i><span class='hide-menu'>" . _($pluginnames[$currentplugin] ) . "</span></a></li>";} } else { if($username == 'admin') { $currentstring = "<li><a href='" . $pluginlocation . $pluginlinks[$currentplugin] . "/'><i class='fa " . $pluginicons[$currentplugin] . " fa-fw'></i><span class='hide-menu'>" . _($pluginnames[$currentplugin] ) . "</span></a></li>"; }}} echo "var plugincontainer" . $currentplugin . " = document.getElementById ('append" . $pluginsections[$currentplugin] . "');\n var plugindata" . $currentplugin . " = \"" . $currentstring . "\";\n plugincontainer" . $currentplugin . ".innerHTML += plugindata" . $currentplugin . ";\n"; } $currentplugin++; } while ($pluginnames[$currentplugin] != ''); } ?>
