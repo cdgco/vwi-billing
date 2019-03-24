@@ -1,11 +1,33 @@
 <?php
 
+/** 
+*
+* Vesta Web Interface
+*
+* Copyright (C) 2019 Carter Roeser <carter@cdgtech.one>
+* https://cdgco.github.io/VestaWebInterface
+*
+* Vesta Web Interface is free software: you can redistribute it and/or modify
+* it under the terms of version 3 of the GNU General Public License as published 
+* by the Free Software Foundation.
+*
+* Vesta Web Interface is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* 
+* You should have received a copy of the GNU General Public License
+* along with Vesta Web Interface.  If not, see
+* <https://github.com/cdgco/VestaWebInterface/blob/master/LICENSE>.
+*
+*/
+
 session_start();
 $configlocation = "../../includes/";
-if (file_exists( '../../includes/config.php' )) { require( '../../includes/includes.php'); }  else { header( 'Location: ../../install' );};
+if (file_exists( '../../includes/config.php' )) { require( '../../includes/includes.php'); }  else { header( 'Location: ../../install' ); exit();};
 
 if(base64_decode($_SESSION['loggedin']) == 'true') {}
-else { header('Location: ../../login.php?to=plugins/vwi-billing'); }
+else { header('Location: ../../login.php?to=plugins/vwi-billing'); exit(); }
 
 require("stripe-lib/init.php");
 
@@ -16,8 +38,8 @@ if($configstyle != '2') {
     mysqli_free_result($billingresult); mysqli_close($con);
     
     $con=mysqli_connect($mysql_server,$mysql_uname,$mysql_pw,$mysql_db);
-    $billingplans = array(); $billingresult2=mysqli_query($con,"SELECT PACKAGE,ID FROM `" . $mysql_table . "billing-plans`");
-    while ($bprow = mysqli_fetch_assoc($billingresult2)) { $billingplans[$bprow["PACKAGE"]] = $bprow["ID"]; }
+    $billingplans = array(); $billingresult2=mysqli_query($con,"SELECT PACKAGE,ID,DISPLAY FROM `" . $mysql_table . "billing-plans`");
+    while ($bprow = mysqli_fetch_assoc($billingresult2)) { $billingplans[$bprow["PACKAGE"]] = ['NAME' => $bprow["PACKAGE"], 'ID' => $bprow["ID"], 'DISPLAY' => $bprow["DISPLAY"]]; }
     mysqli_free_result($billingresult2); mysqli_close($con);
 }
 else {
@@ -37,8 +59,8 @@ else {
         }
         
         $con=mysqli_connect($mysql_server,$mysql_uname,$mysql_pw,$mysql_db);
-        $billingplans = array(); $billingresult2=mysqli_query($con,"SELECT PACKAGE,ID FROM `" . $mysql_table . "billing-plans`");
-        while ($bprow = mysqli_fetch_assoc($billingresult2)) { $billingconfig2[$bprow["PACKAGE"]] = $bcrow["ID"]; }
+        $billingplans = array(); $billingresult2=mysqli_query($con,"SELECT PACKAGE,ID,DISPLAY FROM `" . $mysql_table . "billing-plans`");
+        while ($bprow = mysqli_fetch_assoc($billingresult2)) { $billingplans[$bprow["PACKAGE"]] = ['NAME' => $bprow["PACKAGE"], 'ID' => $bprow["ID"], 'DISPLAY' => $bprow["DISPLAY"]]; }
         mysqli_free_result($billingresult2); mysqli_close($con);
         if (!file_exists( $co1 . 'billingplans.json' )) { 
             file_put_contents( $co1 . "billingplans.json",json_encode($billingplans));
@@ -49,7 +71,7 @@ else {
         
     }
 }
-\Stripe\Stripe::setApiKey($billingconfig['KEY']);
+\Stripe\Stripe::setApiKey($billingconfig['sec_key']);
 
 $postvars = array(
     array('hash' => $vst_apikey, 'user' => $vst_username,'password' => $vst_password,'cmd' => 'v-list-user','arg1' => $username,'arg2' => 'json'),
@@ -74,8 +96,8 @@ while($curlstart <= 1) {
 $admindata = json_decode(curl_exec($curl0), true)[$username];
 $packname = array_keys(json_decode(curl_exec($curl1), true));
 $packdata = array_values(json_decode(curl_exec($curl1), true));
-$sqlplans = array_values($billingplans);
-$sqlpackages = array_keys($billingplans);
+$billingname = array_keys($billingplans);
+$billingdata = array_values($billingplans);
 $useremail = $admindata['CONTACT'];
 if(isset($admindata['LANGUAGE'])){ $locale = $ulang[$admindata['LANGUAGE']]; }
 setlocale("LC_CTYPE", $locale); setlocale("LC_MESSAGES", $locale);
@@ -112,7 +134,6 @@ foreach ($plugins as $result) {
         <link rel="icon" type="image/ico" href="../images/<?php echo $cpfavicon; ?>">
         <title><?php echo $sitetitle; ?> - <?php echo _("Billing"); ?></title>
         <link href="../components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link href="../components/jquery-toast-plugin/jquery.toast.min.css" rel="stylesheet">
         <link href="../components/metismenu/dist/metisMenu.min.css" rel="stylesheet">
         <link href="../components/select2/select2.min.css" rel="stylesheet">
         <link href="../components/animate.css/animate.min.css" rel="stylesheet">
@@ -147,7 +168,8 @@ foreach ($plugins as $result) {
                         </a>
                     </div>
                     <ul class="nav navbar-top-links navbar-left">
-                        <li><a href="javascript:void(0)" class="open-close waves-effect waves-light visible-xs"><i class="ti-close ti-menu"></i></a></li>      
+                        <li><a href="javascript:void(0)" class="open-close waves-effect waves-light visible-xs"><i class="ti-close ti-menu"></i></a></li>
+                        <?php notifications(); ?>
                     </ul>
                     <ul class="nav navbar-top-links navbar-right pull-right">
                         <li>
@@ -213,6 +235,7 @@ foreach ($plugins as $result) {
                                             <th><?php echo _("Product Name"); ?></th>
                                             <th><?php echo _("Price"); ?></th>
                                             <th><?php echo _("Trial"); ?></th>
+                                            <th><?php echo _("Public Registration"); ?></th>
                                             <th><?php echo _("Created"); ?></th>
                                             <th data-sortable="false"><?php echo _("Action"); ?></th>
                                         </tr>
@@ -223,13 +246,13 @@ foreach ($plugins as $result) {
                                             $x1 = 0; 
 
     do {
-        $searchpackage = array_search($packname[$x1], $sqlpackages);
-        if(strpos($sqlpackages[$searchpackage], $packname[$x1]) !== false ) {
-            try { $currentplan = \Stripe\Plan::retrieve('vwi_plan_' . $sqlplans[$searchpackage])->__toArray(true); } 
+        $searchpackage = array_search($packname[$x1], $billingname);
+        if($billingdata[$searchpackage]['NAME'] === $packname[$x1] && $billingdata[$searchpackage]['ID'] != '') {
+            try { $currentplan = \Stripe\Plan::retrieve('vwi_plan_' . $billingdata[$searchpackage]['ID'])->__toArray(true); } 
             catch (\Stripe\Error\Base $e) { $err = $e->getJsonBody()['error']['code']; }
             if(isset($err) || $err != '') {}
             else {
-                try { $currentproduct = \Stripe\Product::retrieve('vwi_prod_' . $sqlplans[$searchpackage])->__toArray(true); } 
+                try { $currentproduct = \Stripe\Product::retrieve('vwi_prod_' . $billingdata[$searchpackage]['ID'])->__toArray(true); } 
                 catch (\Stripe\Error\Base $e) { $err = $e->getJsonBody()['error']['code']; }
                 if(isset($err) || $err != '') {}
                 else {
@@ -272,9 +295,12 @@ foreach ($plugins as $result) {
                         }
                     else { echo 'Disabled'; }
                     echo '</td>
+                        <td><input type="checkbox"'; 
+                        if($billingdata[$searchpackage]['DISPLAY'] == 'true') { echo 'checked'; }
+                        echo ' /></td>
                         <td>' . date("Y-d-m", $currentplan['created']) . '</td>
                         <td><a href="edit.php?package=' . $packname[$x1] . '"><button type="button" data-toggle="tooltip" data-original-title="' . _("Edit") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="fa fa-edit"></i></button></a><span>
-                        <button onclick="confirmDeactivate(\'' . $packname[$x1] . '\', \'' . $sqlplans[$searchpackage] . '\')" type="button" data-toggle="tooltip" data-original-title="' . _("Deactivate") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="fa fa-times"></i></button>
+                        <button onclick="confirmDeactivate(\'' . $packname[$x1] . '\', \'' . $billingdata[$searchpackage]['ID'] . '\')" type="button" data-toggle="tooltip" data-original-title="' . _("Deactivate") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="fa fa-times"></i></button>
                     </td>
                     </tr>'; 
                 }
@@ -293,6 +319,7 @@ foreach ($plugins as $result) {
                                     <thead>
                                         <tr>
                                             <th><?php echo _("Package"); ?></th>
+                                            <th><?php echo _("Public / Free Registration"); ?></th>
                                             <th data-sortable="false"><?php echo _("Action"); ?></th>
                                             
                                         </tr>
@@ -304,12 +331,15 @@ foreach ($plugins as $result) {
 
                                             do {
                                                 
-                                                $searchpackage = array_search($packname[$x2], $sqlpackages);
+                                                $searchpackage2 = array_search($packname[$x2], $billingname);
                                                 
-                                                if( strpos( $sqlpackages[$searchpackage], $packname[$x2] ) === false ) {
+                                                if($billingdata[$searchpackage2]['ID'] == '') {
     
                                                 echo '<tr>
                                                     <td>' . $packname[$x2] . '</td>
+                                                    <td><input type="checkbox"'; 
+                                                    if($billingdata[$searchpackage2]['NAME'] == $packname[$x2] && $billingdata[$searchpackage2]['DISPLAY'] == 'true') { echo 'checked'; }
+                                                    echo ' /></td>
                                                     <td><a href="add.php?package=' . $packname[$x2] . '"><button type="button" data-toggle="tooltip" data-original-title="' . _("Setup") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="fa fa-cog"></i></button></a><span></td>
                                                 </tr>'; }
                                                 $x2++;
@@ -324,12 +354,11 @@ foreach ($plugins as $result) {
                     </div>
                 </div>
                 <?php hotkeys($configlocation); ?>
-                <footer class="footer text-center">&copy; <?php echo date("Y") . ' ' . $sitetitle; ?>. <?php echo _("Vesta Web Interface"); ?> <?php require '../../includes/versioncheck.php'; ?> <?php echo _("by Carter Roeser"); ?>.</footer>
+                <footer class="footer text-center"><?php footer(); ?></footer>
             </div>
         </div>
         
         <script src="../components/jquery/jquery.min.js"></script>
-        <script src="../components/jquery-toast-plugin/jquery.toast.min.js"></script>
         <script src="../components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
         <script src="../components/sweetalert2/sweetalert2.min.js"></script>
         <script src="../components/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -340,8 +369,10 @@ foreach ($plugins as $result) {
         <script src="../components/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
         <script src="../components/select2/select2.min.js"></script>
         <script src="../components/bootstrap-select/js/bootstrap-select.min.js"></script>
+        <script src="../../js/notifications.js"></script>
         <script src="../../js/main.js"></script>
         <script type="text/javascript">
+            var processLocation = "../../process/";
             jQuery(function($){
                 $('.footable').footable();
             });

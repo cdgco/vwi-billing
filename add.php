@@ -1,13 +1,35 @@
 <?php
 
+/** 
+*
+* Vesta Web Interface
+*
+* Copyright (C) 2019 Carter Roeser <carter@cdgtech.one>
+* https://cdgco.github.io/VestaWebInterface
+*
+* Vesta Web Interface is free software: you can redistribute it and/or modify
+* it under the terms of version 3 of the GNU General Public License as published 
+* by the Free Software Foundation.
+*
+* Vesta Web Interface is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* 
+* You should have received a copy of the GNU General Public License
+* along with Vesta Web Interface.  If not, see
+* <https://github.com/cdgco/VestaWebInterface/blob/master/LICENSE>.
+*
+*/
+
 session_start();
 $configlocation = "../../includes/";
-if (file_exists( '../../includes/config.php' )) { require( '../../includes/includes.php'); }  else { header( 'Location: ../../install' );};
+if (file_exists( '../../includes/config.php' )) { require( '../../includes/includes.php'); }  else { header( 'Location: ../../install' ); exit();};
 
 if(base64_decode($_SESSION['loggedin']) == 'true') {}
 else { header('Location: ../../login.php?to=plugins/vwi-billing/add.php'); }
 
-if(!isset($_GET['package']) || $_GET['package'] == '') { header("Location: index.php"); }
+if(!isset($_GET['package']) || $_GET['package'] == '') { header("Location: index.php"); exit(); }
  $postvars = array(
     array('hash' => $vst_apikey, 'user' => $vst_username,'password' => $vst_password,'cmd' => 'v-list-user','arg1' => $username,'arg2' => 'json'));
 
@@ -64,7 +86,6 @@ foreach ($plugins as $result) {
         <link rel="icon" type="image/ico" href="../images/<?php echo $cpfavicon; ?>">
         <title><?php echo $sitetitle; ?> - <?php echo _("Billing"); ?></title>
         <link href="../components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link href="../components/jquery-toast-plugin/jquery.toast.min.css" rel="stylesheet">
         <link href="../components/metismenu/dist/metisMenu.min.css" rel="stylesheet">
         <link href="../components/select2/select2.min.css" rel="stylesheet">
         <link href="../components/animate.css/animate.min.css" rel="stylesheet">
@@ -100,7 +121,8 @@ foreach ($plugins as $result) {
                         </a>
                     </div>
                     <ul class="nav navbar-top-links navbar-left">
-                        <li><a href="javascript:void(0)" class="open-close waves-effect waves-light visible-xs"><i class="ti-close ti-menu"></i></a></li>      
+                        <li><a href="javascript:void(0)" class="open-close waves-effect waves-light visible-xs"><i class="ti-close ti-menu"></i></a></li>
+                        <?php notifications(); ?>
                     </ul>
                     <ul class="nav navbar-top-links navbar-right pull-right">
                         <li>
@@ -382,11 +404,10 @@ foreach ($plugins as $result) {
                     function exitForm() { window.location.href="index.php"; };
                 </script>
                 <?php hotkeys($configlocation); ?>
-                <footer class="footer text-center">&copy; <?php echo date("Y") . ' ' . $sitetitle; ?>. <?php echo _("Vesta Web Interface"); ?> <?php require '../../includes/versioncheck.php'; ?> <?php echo _("by Carter Roeser"); ?>.</footer>
+                <footer class="footer text-center"><?php footer(); ?></footer>
             </div>
         </div>
         <script src="../components/jquery/jquery.min.js"></script>
-        <script src="../components/jquery-toast-plugin/jquery.toast.min.js"></script>
         <script src="../components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
         <script src="../components/sweetalert2/sweetalert2.min.js"></script>
         <script src="../components/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -398,8 +419,10 @@ foreach ($plugins as $result) {
         <script src="../components/select2/select2.min.js"></script>
         <script src="../components/bootstrap-select/js/bootstrap-select.min.js"></script>
         <script src="../components/bootstrapvalidator/bootstrapValidator.js"></script>
+        <script src="../../js/notifications.js"></script>
         <script src="../../js/main.js"></script>
         <script type="text/javascript">
+            var processLocation = "../../process/";
             <?php 
             $pluginlocation = "../"; if(isset($pluginnames[0]) && $pluginnames[0] != '') { $currentplugin = 0; do { if (strtolower($pluginhide[$currentplugin]) != 'y' && strtolower($pluginhide[$currentplugin]) != 'yes') { if (strtolower($pluginadminonly[$currentplugin]) != 'y' && strtolower($pluginadminonly[$currentplugin]) != 'yes') { if (strtolower($pluginnewtab[$currentplugin]) == 'y' || strtolower($pluginnewtab[$currentplugin]) == 'yes') { $currentstring = "<li><a href='" . $pluginlocation . $pluginlinks[$currentplugin] . "/' target='_blank'><i class='fa " . $pluginicons[$currentplugin] . " fa-fw'></i><span class='hide-menu'>" . _($pluginnames[$currentplugin] ) . "</span></a></li>"; } else { $currentstring = "<li><a href='".$pluginlocation.$pluginlinks[$currentplugin]."/'><i class='fa ".$pluginicons[$currentplugin]." fa-fw'></i><span class='hide-menu'>"._($pluginnames[$currentplugin])."</span></a></li>"; }} else { if(strtolower($pluginnewtab[$currentplugin]) == 'y' || strtolower($pluginnewtab[$currentplugin]) == 'yes') { if($username == 'admin') { $currentstring = "<li><a href='" . $pluginlocation . $pluginlinks[$currentplugin] . "/' target='_blank'><i class='fa " . $pluginicons[$currentplugin] . " fa-fw'></i><span class='hide-menu'>" . _($pluginnames[$currentplugin] ) . "</span></a></li>";} } else { if($username == 'admin') { $currentstring = "<li><a href='" . $pluginlocation . $pluginlinks[$currentplugin] . "/'><i class='fa " . $pluginicons[$currentplugin] . " fa-fw'></i><span class='hide-menu'>" . _($pluginnames[$currentplugin] ) . "</span></a></li>"; }}} echo "var plugincontainer" . $currentplugin . " = document.getElementById ('append" . $pluginsections[$currentplugin] . "');\n var plugindata" . $currentplugin . " = \"" . $currentstring . "\";\n plugincontainer" . $currentplugin . ".innerHTML += plugindata" . $currentplugin . ";\n"; } $currentplugin++; } while ($pluginnames[$currentplugin] != ''); } ?>
             $(document).ready(function() {

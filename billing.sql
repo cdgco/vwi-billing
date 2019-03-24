@@ -2,7 +2,7 @@
 *
 * Vesta Web Interface
 *
-* Copyright (C) 2018 Carter Roeser <carter@cdgtech.one>
+* Copyright (C) 2019 Carter Roeser <carter@cdgtech.one>
 * https://cdgco.github.io/VestaWebInterface
 *
 * Vesta Web Interface is free software: you can redistribute it and/or modify
@@ -30,7 +30,8 @@ CREATE TABLE IF NOT EXISTS `vwi_billing-config` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `vwi_billing-config` (`VARIABLE`, `VALUE`) VALUES
-('KEY', '');
+('pub_key', ''),
+('sec_key', '');
 
 ALTER TABLE `vwi_billing-config`
   ADD PRIMARY KEY (`VARIABLE`);
