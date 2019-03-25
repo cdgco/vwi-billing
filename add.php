@@ -207,7 +207,7 @@ foreach ($plugins as $result) {
                                     <div class="form-group">
                                         <label class="col-md-12"><?php echo _("Statement Descriptor (Optional)"); ?></label>
                                         <div class="col-md-12">
-                                                <input type="text" class="form-control" name="statement">
+                                                <input type="text" maxlength="22" class="form-control" name="statement" title="<?php echo _("22 Character Maximum. Letters & Numbers."); ?>">
                                                 <small class="form-text text-muted"><?php echo _("This will appear on customers' bank statements, so make sure it's clearly recognizable."); ?></small>
                                         </div>
                                     </div>

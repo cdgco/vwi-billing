@@ -140,12 +140,12 @@ if($billingdata[$searchpackage]['NAME'] === $_POST['plan'] && $billingdata[$sear
     }
     else {
         try { $currentplan = \Stripe\Plan::retrieve('vwi_plan_' . $billingdata[$searchpackage]['ID'])->__toArray(true); } 
-        catch (\Stripe\Error\Base $e) { $err = $e->getJsonBody()['error']['code']; }
-        if(isset($err) || $err != '') { header('Location: register.php?error=3'); exit(); }
+        catch (\Stripe\Error\Base $e) { $err = $e->getJsonBody()['error']['message']; }
+        if(isset($err) || $err != '') { header('Location: register.php?stripeerr=' . $err); exit(); }
         else {
             try { $currentproduct = \Stripe\Product::retrieve('vwi_prod_' . $billingdata[$searchpackage]['ID'])->__toArray(true); } 
-            catch (\Stripe\Error\Base $e) { $err = $e->getJsonBody()['error']['code']; }
-            if(isset($err) || $err != '') { header('Location: register.php?error=3'); exit(); }
+            catch (\Stripe\Error\Base $e) { $err = $e->getJsonBody()['error']['message']; }
+            if(isset($err) || $err != '') { header('Location: register.php?stripeerr=' . $err); exit(); }
         }
     }
 }
@@ -226,11 +226,74 @@ if($billingdata[$searchpackage]['NAME'] === $_POST['plan'] && $billingdata[$sear
                         <input type="hidden" name="pw-x" value="<?php echo $_POST['password']; ?>"/>
                         <input type="hidden" name="email-x" value="<?php echo $_POST['email']; ?>"/>
                         <input type="hidden" name="plan-x" value="<?php echo $_POST['plan']; ?>"/>
-                        <div class="form-group text-center m-t-20">
-                            <div class="col-xs-12">
-                                <button class="btn color-button btn-lg btn-block text-uppercase waves-effect waves-light bg-theme" style="border:none;" id="payment-submit" type="submit"><?php echo _('Submit'); ?></button>
+                        <div class="form-group m-t-20">
+                            <div class="col-sm-12">
+                                    <button onclick="processLoader();" class="col-xs-12 btn btn-lg color-button bg-theme center-block" type="submit" style="float: left;">    
+                                    <?php 
+                                        if(!is_null($currentplan['trial_period_days']) && isset($currentplan['trial_period_days']) && $currentplan['trial_period_days'] != ''){
+                                            echo _('Start ') . $currentplan['trial_period_days'] . _(' Day Trial');
+                                        }
+                                        else {
+                                        echo _('Pay') . ' ';
+                                
+                                 if($currentplan['currency'] == "aed" || $currentplan['currency'] == "afn" || $currentplan['currency'] == "dkk" || $currentplan['currency'] == "dzd" || $currentplan['currency'] == "egp" || $currentplan['currency'] == "lbp" || $currentplan['currency'] == "mad" || $currentplan['currency'] == "nok" || $currentplan['currency'] == "qar" || $currentplan['currency'] == "sar" || $currentplan['currency'] == "sek" || $currentplan['currency'] == "yer"){
+                                echo number_format(($currentplan['amount']/100), 2, '.', ' ') . ' ' .  $currencies[$currentplan['currency']];
+                                }
+                                elseif($currentplan['currency'] == "bif" || $currentplan['currency'] == "clp" || $currentplan['currency'] == "djf" || $currentplan['currency'] == "gnf" || $currentplan['currency'] == "jpy" || $currentplan['currency'] == "kmf" || $currentplan['currency'] == "krw" || $currentplan['currency'] == "mga" || $currentplan['currency'] == "pyg" || $currentplan['currency'] == "rwf" || $currentplan['currency'] == "vnd" || $currentplan['currency'] == "vuv" || $currentplan['currency'] == "xaf" || $currentplan['currency'] == "xof" || $currentplan['currency'] == "xpf"){
+                                    echo $currencies[$currentplan['currency']] . ' ' . $currentplan['amount'];
+                                }
+                                elseif($currentplan['currency'] == "mro"){
+                                    echo $currencies[$currentplan['currency']] . ' ' .  number_format(($currentplan['amount']/10), 1, '.', ' ');
+                                }
+                                else {
+                                   echo $currencies[$currentplan['currency']] . ' ' . number_format($currentplan['amount']/100, 2) . ' ' .  strtoupper($currentplan['currency']);
+                                }
+                                        }
+                                    
+                                    ?></button>
                             </div>
                         </div>
+                        <div class="form-group m-t-20">
+                            <div class="col-sm-12">
+                                <button onclick="loadLoader();window.history.go(-1);" class="col-xs-12 center-block btn btn-lg btn-muted" type="button" style="float: right;"><?php echo _('Back'); ?></button>
+                            </div>
+                        </div>
+                                <span class="help-block" style="font-size: 14px;"><?php 
+                                    if(!is_null($currentplan['trial_period_days']) && isset($currentplan['trial_period_days']) && $currentplan['trial_period_days'] != ''){
+                                        echo _('After the ') . $currentplan['trial_period_days'] . _(' day trial period, the provided card will be charged <b>');
+                                        }
+                                    else {
+                                        echo _("The provided card will be charged <b>"); 
+                                        
+                                    }
+                                      
+                                 if($currentplan['currency'] == "aed" || $currentplan['currency'] == "afn" || $currentplan['currency'] == "dkk" || $currentplan['currency'] == "dzd" || $currentplan['currency'] == "egp" || $currentplan['currency'] == "lbp" || $currentplan['currency'] == "mad" || $currentplan['currency'] == "nok" || $currentplan['currency'] == "qar" || $currentplan['currency'] == "sar" || $currentplan['currency'] == "sek" || $currentplan['currency'] == "yer"){
+                                echo number_format(($currentplan['amount']/100), 2, '.', ' ') . ' ' .  $currencies[$currentplan['currency']];
+                                }
+                                elseif($currentplan['currency'] == "bif" || $currentplan['currency'] == "clp" || $currentplan['currency'] == "djf" || $currentplan['currency'] == "gnf" || $currentplan['currency'] == "jpy" || $currentplan['currency'] == "kmf" || $currentplan['currency'] == "krw" || $currentplan['currency'] == "mga" || $currentplan['currency'] == "pyg" || $currentplan['currency'] == "rwf" || $currentplan['currency'] == "vnd" || $currentplan['currency'] == "vuv" || $currentplan['currency'] == "xaf" || $currentplan['currency'] == "xof" || $currentplan['currency'] == "xpf"){
+                                    echo $currencies[$currentplan['currency']] . ' ' . $currentplan['amount'];
+                                }
+                                elseif($currentplan['currency'] == "mro"){
+                                    echo $currencies[$currentplan['currency']] . ' ' .  number_format(($currentplan['amount']/10), 1, '.', ' ');
+                                }
+                                else {
+                                   echo $currencies[$currentplan['currency']] . ' ' . number_format($currentplan['amount']/100, 2) . ' ' .  strtoupper($currentplan['currency']);    
+                                }
+                                echo ' / ';
+                                if ($currentplan['interval_count'] > 1) {
+                                    echo $currentplan['interval_count'] . ' ';
+                                }
+                                echo $currentplan['interval'];
+
+                                if ($currentplan['interval_count'] > 1) {
+                                    echo 's';
+                                }
+                                echo _('</b> until the account is closed or plan is changed.');
+                                if(!is_null($currentplan['trial_period_days']) && isset($currentplan['trial_period_days']) && $currentplan['trial_period_days'] != ''){
+                                    echo '<br><br>' . _('You will be charged on ') . '<b>'.date('M d, Y', strtotime("+" . $currentplan['trial_period_days'] . " day")) . '</b>'. _(' unless the account is closed before the specified date.');
+                                        }
+                                ?>
+                                </span><br>  
                         <div class="form-group m-b-0">
                             <div class="col-sm-12 text-center">
                                 <p><?php echo _('Already have an account?'); ?> <a href="../../../login.php" class="text-danger m-l-5"><b><?php echo _('Sign in'); ?></b></a></p>
@@ -303,7 +366,22 @@ if($billingdata[$searchpackage]['NAME'] === $_POST['plan'] && $billingdata[$sear
                 form.appendChild(hiddenInput);
                 form.submit();
             }
-
+            function processLoader(){
+                swal({
+                    title: '<?php echo _("Processing"); ?>',
+                    text: '',
+                    onOpen: function () {
+                        swal.showLoading()
+                    }
+                })};
+            function loadLoader(){
+                swal({
+                    title: '<?php echo _("Loading"); ?>',
+                    text: '',
+                    onOpen: function () {
+                        swal.showLoading()
+                    }
+                })};
             Waves.attach('.button', ['waves-effect']);
             Waves.init();
             const toast1 = Swal.mixin({

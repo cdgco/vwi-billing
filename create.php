@@ -85,7 +85,7 @@ else {
     $trial = null;
 }
 if(isset($_POST['statement']) && $_POST['statement'] != ''){
-    $statement = intval($_POST['statement']);
+    $statement = $_POST['statement'];
 }
 else {
     $statement = null;

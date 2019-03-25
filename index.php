@@ -144,6 +144,25 @@ foreach ($plugins as $result) {
         <link href="../../css/style.css" rel="stylesheet">
         <link href="../../css/colors/<?php if(isset($_COOKIE['theme']) && $themecolor != 'custom.css') { echo base64_decode($_COOKIE['theme']); } else {echo $themecolor; } ?>" id="theme" rel="stylesheet">
         <?php if($themecolor == "custom.css") { require( '../../css/colors/custom.php'); } ?>
+        <style>
+        .hover-top {
+            background: inherit;
+            min-height: 35px;
+            min-width: 40px;
+            }
+        .hover-top i.h-hide {
+            display:block;
+        }
+        .hover-top i.h-show {
+            display:none;
+        }
+        .hover-top:hover i.h-hide {
+            display:none;
+        }
+        .hover-top:hover i.h-show {
+            display:block;
+        }
+        </style>       
         <?php if(GOOGLE_ANALYTICS_ID != ''){ echo "<script async src='https://www.googletagmanager.com/gtag/js?id=" . GOOGLE_ANALYTICS_ID . "'></script>
         <script>window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '" . GOOGLE_ANALYTICS_ID . "');</script>"; } ?> 
         <!--[if lt IE 9]>
@@ -271,12 +290,7 @@ foreach ($plugins as $result) {
                         echo $currencies[$currentplan['currency']] . ' ' .  number_format(($currentplan['amount']/10), 1, '.', ' ');
                     }
                     else {
-                       echo $currencies[$currentplan['currency']] . ' ';
-                        
-                        if (strlen((string)$currentplan['amount']) == 1) { echo $currentplan['amount']/100; }
-                        else { echo $currentplan['amount']; }
-                        
-                        echo ' ' .  strtoupper($currentplan['currency']);
+                       echo $currencies[$currentplan['currency']] . ' ' . number_format($currentplan['amount']/100, 2) . ' ' .  strtoupper($currentplan['currency']);
                     }
                     echo ' / ';
 
@@ -295,10 +309,15 @@ foreach ($plugins as $result) {
                         }
                     else { echo 'Disabled'; }
                     echo '</td>
-                        <td><input type="checkbox"'; 
-                        if($billingdata[$searchpackage]['DISPLAY'] == 'true') { echo 'checked'; }
-                        echo ' /></td>
-                        <td>' . date("Y-d-m", $currentplan['created']) . '</td>
+                        <td>';
+                    if($billingdata[$searchpackage]['DISPLAY'] == 'true') { echo '
+                        <button onclick="disablePublic(\'' . $packname[$x1] . '\', \'paid\')" type="button" data-toggle="tooltip" data-original-title="' . _("Disable") . '" class="btn color-button btn-outline btn-md m-r-5 hover-top"><i class="fa fa-check h-hide"></i><i class="fa fa-times h-show"></i></button>';
+                    }
+                    else {
+                        echo '
+                        <button onclick="enablePublic(\'' . $packname[$x1] . '\', \'paid\')" type="button" data-toggle="tooltip" data-original-title="' . _("Enable") . '" class="btn color-button btn-outline btn-md m-r-5 hover-top"><i class="fa fa-times h-hide"></i><i class="fa fa-check h-show"></i></button>';
+                    }
+                        echo '</td><td>' . date("Y-d-m", $currentplan['created']) . '</td>
                         <td><a href="edit.php?package=' . $packname[$x1] . '"><button type="button" data-toggle="tooltip" data-original-title="' . _("Edit") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="fa fa-edit"></i></button></a><span>
                         <button onclick="confirmDeactivate(\'' . $packname[$x1] . '\', \'' . $billingdata[$searchpackage]['ID'] . '\')" type="button" data-toggle="tooltip" data-original-title="' . _("Deactivate") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="fa fa-times"></i></button>
                     </td>
@@ -337,9 +356,17 @@ foreach ($plugins as $result) {
     
                                                 echo '<tr>
                                                     <td>' . $packname[$x2] . '</td>
-                                                    <td><input type="checkbox"'; 
-                                                    if($billingdata[$searchpackage2]['NAME'] == $packname[$x2] && $billingdata[$searchpackage2]['DISPLAY'] == 'true') { echo 'checked'; }
-                                                    echo ' /></td>
+                                                    <td>';
+                                                    
+                                                    if($billingdata[$searchpackage2]['NAME'] == $packname[$x2] && $billingdata[$searchpackage2]['DISPLAY'] == 'true') { echo '
+                                                    <button onclick="disablePublic(\'' . $packname[$x2] . '\', \'free\')" type="button" data-toggle="tooltip" data-original-title="' . _("Disable") . '" class="btn color-button btn-outline btn-md m-r-5 hover-top"><i class="fa fa-check h-hide"></i><i class="fa fa-times h-show"></i></button>';
+                                                }
+                                                else {
+                                                    echo '
+                                                    <button onclick="enablePublic(\'' . $packname[$x2] . '\', \'free\')" type="button" data-toggle="tooltip" data-original-title="' . _("Enable") . '" class="btn color-button btn-outline btn-md m-r-5 hover-top"><i class="fa fa-times h-hide"></i><i class="fa fa-check h-show"></i></button>';
+                                                }
+                                                    
+                                                    echo '</td>
                                                     <td><a href="add.php?package=' . $packname[$x2] . '"><button type="button" data-toggle="tooltip" data-original-title="' . _("Setup") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="fa fa-cog"></i></button></a><span></td>
                                                 </tr>'; }
                                                 $x2++;
@@ -400,7 +427,86 @@ foreach ($plugins as $result) {
                     )
                     window.location.replace("delete.php?plan=" + e1 + "&id=" + f1);
                 })}
+            function disablePublic(e, f){
+                e1 = String(e);
+                f1 = String(f);
+                swal({
+                    title: '<?php echo _("Processing"); ?>',
+                    text: '',
+                    onOpen: function () {
+                        swal.showLoading()
+                    }
+                }).then(
 
+                    $.ajax({  
+                        type: "POST",  
+                        url: "process/disable-public.php",  
+                        data: { 'verified':'yes', 'package': e1, 'type': f1 },      
+                        success: function(data){
+                            swal.close();
+                            if(data == '0'){
+                                swal({title:'<?php echo _("Successfully Updated!"); ?>', type:'success', allowOutsideClick:false, allowEscapeKey:false, allowEnterKey:false});
+                                swal.disableButtons();
+                                setTimeout(function(){
+                                    window.location="index.php";
+                                }, 2000);
+                            }
+                            else {
+                                swal({title:'<?php echo _("Error Updating Package"); ?>', html:'<?php echo _("Please try again or contact support."); ?> <br><br><span onclick="$(\'.errortoggle\').toggle();" class="swal-error-title">View Error Code <i class="errortoggle fa fa-angle-double-right"></i><i style="display:none;" class="errortoggle fa fa-angle-double-down"></i></span><span class="errortoggle" style="display:none;"><br><br>(MySQL Error: ' + data + ')</span>', type:'error'});
+                            }
+
+                        },
+                        error: function(){
+                            swal.close();
+                            swal({title:'<?php echo _("Please try again later or contact support."); ?>', type:'error'});
+                        }  
+                    }),
+                    function () {},
+                    function (dismiss) {
+                        if (dismiss === 'timer') {
+                        }
+                    }
+                )}
+            function enablePublic(e, f){
+                e1 = String(e);
+                f1 = String(f);
+                swal({
+                    title: '<?php echo _("Processing"); ?>',
+                    text: '',
+                    onOpen: function () {
+                        swal.showLoading()
+                    }
+                }).then(
+
+                    $.ajax({  
+                        type: "POST",  
+                        url: "process/enable-public.php",  
+                        data: { 'verified':'yes', 'package': e1, 'type': f1 },      
+                        success: function(data){
+                            swal.close();
+                            if(data == '0'){
+                                swal({title:'<?php echo _("Successfully Updated!"); ?>', type:'success', allowOutsideClick:false, allowEscapeKey:false, allowEnterKey:false});
+                                swal.disableButtons();
+                                setTimeout(function(){
+                                    window.location="index.php";
+                                }, 2000);
+                            }
+                            else {
+                                swal({title:'<?php echo _("Error Updating Package"); ?>', html:'<?php echo _("Please try again or contact support."); ?> <br><br><span onclick="$(\'.errortoggle\').toggle();" class="swal-error-title">View Error Code <i class="errortoggle fa fa-angle-double-right"></i><i style="display:none;" class="errortoggle fa fa-angle-double-down"></i></span><span class="errortoggle" style="display:none;"><br><br>(MySQL Error: ' + data + ')</span>', type:'error'});
+                            }
+
+                        },
+                        error: function(){
+                            swal.close();
+                            swal({title:'<?php echo _("Please try again later or contact support."); ?>', type:'error'});
+                        }  
+                    }),
+                    function () {},
+                    function (dismiss) {
+                        if (dismiss === 'timer') {
+                        }
+                    }
+                )}
             <?php 
             
             includeScript();

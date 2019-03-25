@@ -197,7 +197,7 @@ textdomain('messages');
                         </div>
                         <div class="form-group ">
                             <div class="col-xs-12">
-                                <select class="selectpicker m-b-20 m-r-10" name="plan" data-style="btn color-button bg-theme" style="border:none;">
+                                <select class="selectpicker m-b-20 m-r-10" name="plan" id="plan-selector" data-style="btn color-button bg-theme" style="border:none;">
                                  <?php
                                         if($packname[0] != '') { 
                                             $x1 = 0;
@@ -227,12 +227,7 @@ textdomain('messages');
                                                                     echo $currencies[$currentplan['currency']] . ' ' .  number_format(($currentplan['amount']/10), 1, '.', ' ');
                                                                 }
                                                                 else {
-                                                                   echo $currencies[$currentplan['currency']] . ' ';
-
-                                                                    if (strlen((string)$currentplan['amount']) <= 2) { echo number_format($currentplan['amount']/100, 2); }
-                                                                    else { echo $currentplan['amount']; }
-
-                                                                    echo ' ' .  strtoupper($currentplan['currency']);
+                                                                   echo $currencies[$currentplan['currency']] . ' ' . number_format($currentplan['amount']/100, 2) . ' ' .  strtoupper($currentplan['currency']);
                                                                 }
                                                                 echo ' / ';
                                                                 if ($currentplan['interval_count'] > 1) {
@@ -309,8 +304,10 @@ textdomain('messages');
               showConfirmButton: false
             });
             
-             <?php
-            
+            <?php if(isset($_GET['sel-plan']) && $_GET['sel-plan'] != '') {
+            echo 'for (i = 0; i < document.getElementById("plan-selector").length; ++i){
+                  if (document.getElementById("plan-selector").options[i].value == "'.$_GET['sel-plan'].'"){document.getElementById("plan-selector").value="'.$_GET['sel-plan'].'";}}';
+            } 
             if($configstyle == '2'){
                 if($warningson == "all"){
                     if(substr(sprintf('%o', fileperms($configlocation)), -4) == '0777') {
@@ -357,6 +354,10 @@ textdomain('messages');
             if(isset($_GET['error']) && $_GET['error'] == "3") {
                 echo "swal({title:'" . $errorcode[3] . "', html:'" . _("Please try again or contact support.") . "', type:'error'});";
             }
+             if(isset($_GET['stripeerr'])) {
+                echo "swal({title:'" . _("Stripe Processing Error") . "', html:'" . _("Please try again or contact support.") . "<br><br><span onclick=\"$(\'.errortoggle\').toggle();\" class=\"swal-error-title\">View Error <i class=\"errortoggle fa fa-angle-double-right\"></i><i style=\"display:none;\" class=\"errortoggle fa fa-angle-double-down\"></i></span><span class=\"errortoggle\" style=\"display:none;\"><br><br>Stripe Error: " . $_GET['stripeerr'] . "</span>', type:'error'});";
+            }
+        
             ?>
         </script>
     </body>
