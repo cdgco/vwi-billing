@@ -20,6 +20,7 @@ This plugin is currently under active development and is not able to be installe
  - Settings page in admin console to control listings page
  - Coupon support
  - Multi tiered pricing for packages (currently only 1 plan per package allowed)
+ - Usage based pricing (charge per bandwidth, disk usage, domains used, etc.)
  
 
 # Configuration Process
