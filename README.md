@@ -17,6 +17,7 @@ This plugin is currently under active development and is not able to be installe
     - Suspend user if unpaid
     - Cancel plan if account closed
  - Listing page to display available plans / details
+ - Change plan after account created
  - Settings page in admin console to control listings page
  - Coupon support
  - Multi tiered pricing for packages (currently only 1 plan per package allowed)
