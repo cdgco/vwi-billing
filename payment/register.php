@@ -36,7 +36,7 @@ if(!in_array('vwi-billing', $plugins)) {
 }
 
 
-require("../stripe-lib/init.php");
+require("../stripe-php/init.php");
 
 if($configstyle != '2') {
     $con=mysqli_connect($mysql_server,$mysql_uname,$mysql_pw,$mysql_db);

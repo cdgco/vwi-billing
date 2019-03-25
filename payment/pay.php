@@ -43,7 +43,7 @@ elseif ((!isset($_POST['password'])) || ($_POST['password'] == '')) { header('Lo
 elseif ((!isset($_POST['plan'])) || ($_POST['plan'] == '')) { header('Location: register.php?error=1'); exit();}
 
 
-require("../stripe-lib/init.php");
+require("../stripe-php/init.php");
 
 if($configstyle != '2') {
     $con=mysqli_connect($mysql_server,$mysql_uname,$mysql_pw,$mysql_db);

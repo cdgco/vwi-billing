@@ -1,0 +1,25 @@
+{
+  "name": "vwi-billing",
+  "homepage": "https://github.com/cdgco/vwi-billing",
+  "authors": [
+    "Carter Roeser <carter@cdgtech.one>"
+  ],
+  "description": "Billing plugin for Vesta Web Interface.",
+  "main": "../../js/main.js",
+  "keywords": [],
+  "license": "GPL-3.0",
+  "private": true,
+  "ignore": [
+    "node_modules",
+    "bower_components"
+  ],
+  "dependencies": {
+    "stripe-php": "stripe/stripe-php#latest"
+  },
+  "install": {
+    "path": "./",
+    "sources": {
+      "stripe-php": "bower_components/stripe-php/**"
+      }
+  }
+}

@@ -42,7 +42,7 @@ elseif ((!isset($_POST['email-x'])) || ($_POST['email-x'] == '')) { header('Loca
 elseif ((!isset($_POST['pw-x'])) || ($_POST['pw-x'] == '')) { header('Location: register.php?error=1'); exit();}
 elseif ((!isset($_POST['plan-x'])) || ($_POST['plan-x'] == '')) { header('Location: register.php?error=1'); exit();}
 
- require("../stripe-lib/init.php");
+ require("../stripe-php/init.php");
 
 if($configstyle != '2') {
     $con=mysqli_connect($mysql_server,$mysql_uname,$mysql_pw,$mysql_db);

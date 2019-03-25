@@ -29,7 +29,7 @@ if (file_exists( '../../includes/config.php' )) { require( '../../includes/inclu
 if(base64_decode($_SESSION['loggedin']) == 'true') {}
 else { header('Location: ../../login.php?to=plugins/vwi-billing'); exit(); }
 
-require("stripe-lib/init.php");
+require("stripe-php/init.php");
 
 if($username != 'admin') { header("Location: ../../../"); }
 if(!isset($_GET['plan']) || $_GET['plan'] == ''){ header("Location: index.php?error=1"); }
