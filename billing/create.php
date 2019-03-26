@@ -34,20 +34,21 @@ require("stripe-php/init.php");
 if($configstyle != '2') {
     $con=mysqli_connect($mysql_server,$mysql_uname,$mysql_pw,$mysql_db);
     $billingconfig = array(); $billingresult=mysqli_query($con,"SELECT VARIABLE,VALUE FROM `" . $mysql_table . "billing-config`");
+    $billingplans = array(); $billingresult2=mysqli_query($con,"SELECT PACKAGE,ID,DISPLAY FROM `" . $mysql_table . "billing-plans`");
+    $billingcustomers = array(); $billingresult3=mysqli_query($con,"SELECT username,ID FROM `" . $mysql_table . "billing-customers`");
     while ($bcrow = mysqli_fetch_assoc($billingresult)) { $billingconfig[$bcrow["VARIABLE"]] = $bcrow["VALUE"]; }
-    mysqli_free_result($billingresult); mysqli_close($con);
-    
-    $con=mysqli_connect($mysql_server,$mysql_uname,$mysql_pw,$mysql_db);
-    $billingplans = array(); $billingresult2=mysqli_query($con,"SELECT PACKAGE,ID FROM `" . $mysql_table . "billing-plans`");
-    while ($bprow = mysqli_fetch_assoc($billingresult2)) { $billingplans[$bprow["PACKAGE"]] = $bprow["ID"]; }
-    mysqli_free_result($billingresult2); mysqli_close($con);
+    while ($bprow = mysqli_fetch_assoc($billingresult2)) { $billingplans[$bprow["PACKAGE"]] = ['NAME' => $bprow["PACKAGE"], 'ID' => $bprow["ID"], 'DISPLAY' => $bprow["DISPLAY"]]; }
+    while ($burow = mysqli_fetch_assoc($billingresult3)) { $billingcustomers[$burow["username"]] = $burow["ID"]; }
+    mysqli_free_result($billingresult);mysqli_free_result($billingresult2);mysqli_free_result($billingresult3);mysqli_close($con);
 }
 else {
     
     if (!$con) { $billingconfig = json_decode(file_get_contents( $co1 . 'billingconfig.json'), true);
-                 $billingplans = json_decode(file_get_contents( $co1 . 'billingplans.json'), true); }
+                 $billingplans = json_decode(file_get_contents( $co1 . 'billingplans.json'), true);
+               $billingcustomers = json_decode(file_get_contents( $co1 . 'billingcustomers.json'), true);}
     else { 
         $con=mysqli_connect($mysql_server,$mysql_uname,$mysql_pw,$mysql_db);
+        
         $billingconfig = array(); $billingresult=mysqli_query($con,"SELECT VARIABLE,VALUE FROM `" . $mysql_table . "billing-config`");
         while ($bcrow = mysqli_fetch_assoc($billingresult)) { $billingconfig[$bcrow["VARIABLE"]] = $bcrow["VALUE"]; }
         mysqli_free_result($billingresult); mysqli_close($con);
@@ -58,15 +59,23 @@ else {
             file_put_contents( $co1 . "billingconfig.json",json_encode($billingconfig)); 
         }
         
-        $con=mysqli_connect($mysql_server,$mysql_uname,$mysql_pw,$mysql_db);
-        $billingplans = array(); $billingresult2=mysqli_query($con,"SELECT PACKAGE,ID FROM `" . $mysql_table . "billing-plans`");
-        while ($bprow = mysqli_fetch_assoc($billingresult2)) { $billingconfig2[$bprow["PACKAGE"]] = $bcrow["ID"]; }
+        $billingplans = array(); $billingresult2=mysqli_query($con,"SELECT PACKAGE,ID,DISPLAY FROM `" . $mysql_table . "billing-plans`");
+        while ($bprow = mysqli_fetch_assoc($billingresult2)) { $billingplans[$bprow["PACKAGE"]] = ['NAME' => $bprow["PACKAGE"], 'ID' => $bprow["ID"], 'DISPLAY' => $bprow["DISPLAY"]]; }
         mysqli_free_result($billingresult2); mysqli_close($con);
         if (!file_exists( $co1 . 'billingplans.json' )) { 
             file_put_contents( $co1 . "billingplans.json",json_encode($billingplans));
         }  
         elseif ((time()-filemtime( $co1 . "billingplans.json")) > 1800 || $billingplans != json_decode(file_get_contents( $co1 . 'billingplans.json'), true)) { 
             file_put_contents( $co1 . "billingplans.json",json_encode($billingplans)); 
+        }
+        $billingcustomers = array(); $billingresult3=mysqli_query($con,"SELECT PACKAGE,ID,DISPLAY FROM `" . $mysql_table . "billing-plans`");
+        while ($burow = mysqli_fetch_assoc($billingresult3)) { $billingcustomers[$burow["username"]] = $burow["ID"]; }
+        mysqli_free_result($billingresult3); mysqli_close($con);
+        if (!file_exists( $co1 . 'billingcustomers.json' )) { 
+            file_put_contents( $co1 . "billingcustomers.json",json_encode($billingcustomers));
+        }  
+        elseif ((time()-filemtime( $co1 . "billingcustomers.json")) > 1800 || $billingcustomers != json_decode(file_get_contents( $co1 . 'billingcustomers.json'), true)) { 
+            file_put_contents( $co1 . "billingcustomers.json",json_encode($billingcustomers)); 
         }
         
     }
@@ -93,43 +102,37 @@ else {
 if (isset($_POST['package']) && $_POST['package'] != ''){
     if (isset($_POST['name']) && $_POST['name'] != '' && isset($_POST['id']) && $_POST['id'] != '' && isset($_POST['amount']) && $_POST['amount'] != '' && isset($_POST['interval']) && $_POST['interval'] != '' && isset($_POST['currency']) && $_POST['currency'] != ''){
         try { 
-            \Stripe\Product::create(array(
-              "name" => $_POST['name'],
-              "type" => "service",
-              "id" => "vwi_prod_" . $_POST['id'],
-              "statement_descriptor" => $statement
-            )); 
-        } 
+            \Stripe\Plan::create(array(
+              "amount" => intval(str_replace(".","", $_POST['amount'])),
+              "id" => "vwi_plan_" . $_POST['id'],
+              "interval" => $interval[0],
+              "interval_count" => intval($interval[1]),
+              "product" => [
+                  "name" => $_POST['name'],
+                  "type" => "service",
+                  "id" => "vwi_prod_" . $_POST['id'],
+                  "statement_descriptor" => $statement  
+              ],
+              "currency" => $_POST['currency'],
+              "trial_period_days" => $trial,
+              "metadata" => [
+                  "package" => $_POST['package']
+              ]
+            ));
+        }
         catch (\Stripe\Error\Base $e) { $err = $e->getJsonBody()['error']['code']; }
         if(isset($err) || $err != '') {
-           header("Location: add.php?err=" . $err . "&package=" . $_POST['package']);
+            header("Location: add.php?err=" . $err . "&package=" . $_POST['package']);
         }
         else {
-            try { 
-                \Stripe\Plan::create(array(
-                  "amount" => intval(str_replace(".","", $_POST['amount'])),
-                  "id" => "vwi_plan_" . $_POST['id'],
-                  "interval" => $interval[0],
-                  "interval_count" => intval($interval[1]),
-                  "product" => "vwi_prod_" . $_POST['id'],
-                  "currency" => $_POST['currency'],
-                  "trial_period_days" => $trial,
-                ));
-            }
-            catch (\Stripe\Error\Base $e) { $err = $e->getJsonBody()['error']['code']; }
-            if(isset($err) || $err != '') {
-                header("Location: add.php?err=" . $err . "&package=" . $_POST['package']);
-            }
-            else {
-                $r1 = 0;
-                $con=mysqli_connect($mysql_server,$mysql_uname,$mysql_pw,$mysql_db);
-                $v1 = mysqli_real_escape_string($con, $_POST['package']);
-                $v2 = mysqli_real_escape_string($con, $_POST['id']);
-                $addtotable= "INSERT INTO `" . $mysql_table . "billing-plans` (PACKAGE, ID) VALUES ('".$v1."','".$v2."') ON DUPLICATE KEY UPDATE ID='".$v2."';";
-                if (mysqli_query($con, $addtotable)) {} else { $r1 = $r1 + 1; }
-                mysqli_close($con);
+            $r1 = 0;
+            $con=mysqli_connect($mysql_server,$mysql_uname,$mysql_pw,$mysql_db);
+            $v1 = mysqli_real_escape_string($con, $_POST['package']);
+            $v2 = mysqli_real_escape_string($con, $_POST['id']);
+            $addtotable= "INSERT INTO `" . $mysql_table . "billing-plans` (PACKAGE, ID) VALUES ('".$v1."','".$v2."') ON DUPLICATE KEY UPDATE ID='".$v2."';";
+            if (mysqli_query($con, $addtotable)) {} else { $r1 = $r1 + 1; }
+            mysqli_close($con);
 
-            }
         }
     }
     else { header("Location: add.php?error=1&package=" . $_POST['package']); }

@@ -15,4 +15,8 @@
     <new-tab>No</new-tab>
     <!-- Hide your plugin from menus? "yes" or "no". -->
     <hide>No</hide>
+    <!-- Name as seen in admin plugin list. -->
+    <admin-name>vwi-billing Admin Side</admin-name>
+    <!-- Descriptor for plugin list. -->
+    <descriptor>Admin and Backend for vwi-billing</descriptor>
 </plugin>

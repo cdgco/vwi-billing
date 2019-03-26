@@ -34,20 +34,21 @@ require("stripe-php/init.php");
 if($configstyle != '2') {
     $con=mysqli_connect($mysql_server,$mysql_uname,$mysql_pw,$mysql_db);
     $billingconfig = array(); $billingresult=mysqli_query($con,"SELECT VARIABLE,VALUE FROM `" . $mysql_table . "billing-config`");
-    while ($bcrow = mysqli_fetch_assoc($billingresult)) { $billingconfig[$bcrow["VARIABLE"]] = $bcrow["VALUE"]; }
-    mysqli_free_result($billingresult); mysqli_close($con);
-    
-    $con=mysqli_connect($mysql_server,$mysql_uname,$mysql_pw,$mysql_db);
     $billingplans = array(); $billingresult2=mysqli_query($con,"SELECT PACKAGE,ID,DISPLAY FROM `" . $mysql_table . "billing-plans`");
+    $billingcustomers = array(); $billingresult3=mysqli_query($con,"SELECT username,ID FROM `" . $mysql_table . "billing-customers`");
+    while ($bcrow = mysqli_fetch_assoc($billingresult)) { $billingconfig[$bcrow["VARIABLE"]] = $bcrow["VALUE"]; }
     while ($bprow = mysqli_fetch_assoc($billingresult2)) { $billingplans[$bprow["PACKAGE"]] = ['NAME' => $bprow["PACKAGE"], 'ID' => $bprow["ID"], 'DISPLAY' => $bprow["DISPLAY"]]; }
-    mysqli_free_result($billingresult2); mysqli_close($con);
+    while ($burow = mysqli_fetch_assoc($billingresult3)) { $billingcustomers[$burow["username"]] = $burow["ID"]; }
+    mysqli_free_result($billingresult);mysqli_free_result($billingresult2);mysqli_free_result($billingresult3);mysqli_close($con);
 }
 else {
     
     if (!$con) { $billingconfig = json_decode(file_get_contents( $co1 . 'billingconfig.json'), true);
-                 $billingplans = json_decode(file_get_contents( $co1 . 'billingplans.json'), true); }
+                 $billingplans = json_decode(file_get_contents( $co1 . 'billingplans.json'), true);
+               $billingcustomers = json_decode(file_get_contents( $co1 . 'billingcustomers.json'), true);}
     else { 
         $con=mysqli_connect($mysql_server,$mysql_uname,$mysql_pw,$mysql_db);
+        
         $billingconfig = array(); $billingresult=mysqli_query($con,"SELECT VARIABLE,VALUE FROM `" . $mysql_table . "billing-config`");
         while ($bcrow = mysqli_fetch_assoc($billingresult)) { $billingconfig[$bcrow["VARIABLE"]] = $bcrow["VALUE"]; }
         mysqli_free_result($billingresult); mysqli_close($con);
@@ -58,7 +59,6 @@ else {
             file_put_contents( $co1 . "billingconfig.json",json_encode($billingconfig)); 
         }
         
-        $con=mysqli_connect($mysql_server,$mysql_uname,$mysql_pw,$mysql_db);
         $billingplans = array(); $billingresult2=mysqli_query($con,"SELECT PACKAGE,ID,DISPLAY FROM `" . $mysql_table . "billing-plans`");
         while ($bprow = mysqli_fetch_assoc($billingresult2)) { $billingplans[$bprow["PACKAGE"]] = ['NAME' => $bprow["PACKAGE"], 'ID' => $bprow["ID"], 'DISPLAY' => $bprow["DISPLAY"]]; }
         mysqli_free_result($billingresult2); mysqli_close($con);
@@ -67,6 +67,15 @@ else {
         }  
         elseif ((time()-filemtime( $co1 . "billingplans.json")) > 1800 || $billingplans != json_decode(file_get_contents( $co1 . 'billingplans.json'), true)) { 
             file_put_contents( $co1 . "billingplans.json",json_encode($billingplans)); 
+        }
+        $billingcustomers = array(); $billingresult3=mysqli_query($con,"SELECT PACKAGE,ID,DISPLAY FROM `" . $mysql_table . "billing-plans`");
+        while ($burow = mysqli_fetch_assoc($billingresult3)) { $billingcustomers[$burow["username"]] = $burow["ID"]; }
+        mysqli_free_result($billingresult3); mysqli_close($con);
+        if (!file_exists( $co1 . 'billingcustomers.json' )) { 
+            file_put_contents( $co1 . "billingcustomers.json",json_encode($billingcustomers));
+        }  
+        elseif ((time()-filemtime( $co1 . "billingcustomers.json")) > 1800 || $billingcustomers != json_decode(file_get_contents( $co1 . 'billingcustomers.json'), true)) { 
+            file_put_contents( $co1 . "billingcustomers.json",json_encode($billingcustomers)); 
         }
         
     }
@@ -445,11 +454,8 @@ foreach ($plugins as $result) {
                         success: function(data){
                             swal.close();
                             if(data == '0'){
-                                swal({title:'<?php echo _("Successfully Updated!"); ?>', type:'success', allowOutsideClick:false, allowEscapeKey:false, allowEnterKey:false});
-                                swal.disableButtons();
-                                setTimeout(function(){
-                                    window.location="index.php";
-                                }, 2000);
+                                swal({title:'<?php echo _("Successfully Updated!"); ?>', type:'success', allowOutsideClick:false, allowEscapeKey:false, allowEnterKey:false, onOpen: function () {swal.showLoading()}});
+                                window.location="index.php";
                             }
                             else {
                                 swal({title:'<?php echo _("Error Updating Package"); ?>', html:'<?php echo _("Please try again or contact support."); ?> <br><br><span onclick="$(\'.errortoggle\').toggle();" class="swal-error-title">View Error Code <i class="errortoggle fa fa-angle-double-right"></i><i style="display:none;" class="errortoggle fa fa-angle-double-down"></i></span><span class="errortoggle" style="display:none;"><br><br>(MySQL Error: ' + data + ')</span>', type:'error'});
@@ -485,11 +491,8 @@ foreach ($plugins as $result) {
                         success: function(data){
                             swal.close();
                             if(data == '0'){
-                                swal({title:'<?php echo _("Successfully Updated!"); ?>', type:'success', allowOutsideClick:false, allowEscapeKey:false, allowEnterKey:false});
-                                swal.disableButtons();
-                                setTimeout(function(){
-                                    window.location="index.php";
-                                }, 2000);
+                                swal({title:'<?php echo _("Successfully Updated!"); ?>', type:'success', allowOutsideClick:false, allowEscapeKey:false, allowEnterKey:false, onOpen: function () {swal.showLoading()}});
+                                window.location="index.php";
                             }
                             else {
                                 swal({title:'<?php echo _("Error Updating Package"); ?>', html:'<?php echo _("Please try again or contact support."); ?> <br><br><span onclick="$(\'.errortoggle\').toggle();" class="swal-error-title">View Error Code <i class="errortoggle fa fa-angle-double-right"></i><i style="display:none;" class="errortoggle fa fa-angle-double-down"></i></span><span class="errortoggle" style="display:none;"><br><br>(MySQL Error: ' + data + ')</span>', type:'error'});
@@ -508,10 +511,8 @@ foreach ($plugins as $result) {
                     }
                 )}
             <?php 
-            
+            processPlugins();
             includeScript();
-            
-            $pluginlocation = "../"; if(isset($pluginnames[0]) && $pluginnames[0] != '') { $currentplugin = 0; do { if (strtolower($pluginhide[$currentplugin]) != 'y' && strtolower($pluginhide[$currentplugin]) != 'yes') { if (strtolower($pluginadminonly[$currentplugin]) != 'y' && strtolower($pluginadminonly[$currentplugin]) != 'yes') { if (strtolower($pluginnewtab[$currentplugin]) == 'y' || strtolower($pluginnewtab[$currentplugin]) == 'yes') { $currentstring = "<li><a href='" . $pluginlocation . $pluginlinks[$currentplugin] . "/' target='_blank'><i class='fa " . $pluginicons[$currentplugin] . " fa-fw'></i><span class='hide-menu'>" . _($pluginnames[$currentplugin] ) . "</span></a></li>"; } else { $currentstring = "<li><a href='".$pluginlocation.$pluginlinks[$currentplugin]."/'><i class='fa ".$pluginicons[$currentplugin]." fa-fw'></i><span class='hide-menu'>"._($pluginnames[$currentplugin])."</span></a></li>"; }} else { if(strtolower($pluginnewtab[$currentplugin]) == 'y' || strtolower($pluginnewtab[$currentplugin]) == 'yes') { if($username == 'admin') { $currentstring = "<li><a href='" . $pluginlocation . $pluginlinks[$currentplugin] . "/' target='_blank'><i class='fa " . $pluginicons[$currentplugin] . " fa-fw'></i><span class='hide-menu'>" . _($pluginnames[$currentplugin] ) . "</span></a></li>";} } else { if($username == 'admin') { $currentstring = "<li><a href='" . $pluginlocation . $pluginlinks[$currentplugin] . "/'><i class='fa " . $pluginicons[$currentplugin] . " fa-fw'></i><span class='hide-menu'>" . _($pluginnames[$currentplugin] ) . "</span></a></li>"; }}} echo "var plugincontainer" . $currentplugin . " = document.getElementById ('append" . $pluginsections[$currentplugin] . "');\n var plugindata" . $currentplugin . " = \"" . $currentstring . "\";\n plugincontainer" . $currentplugin . ".innerHTML += plugindata" . $currentplugin . ";\n"; } $currentplugin++; } while ($pluginnames[$currentplugin] != ''); }
             
             if(isset($_POST['a1']) && $_POST['a1'] == "0") {
                 echo "swal({title:'" . _("Successfully Created!") . "', type:'success'});";

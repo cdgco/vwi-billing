@@ -28,10 +28,9 @@ if (file_exists( '../../../includes/config.php' )) { require( '../../../includes
 if(base64_decode($_SESSION['loggedin']) == 'true') {}
 else { header('Location: ../../../login.php'); exit();}
 
-if(!in_array('vwi-billing', $plugins)) {
+if(!in_array('billing', $plugins)) {
     header( 'Location: ../../../register.php' ); exit();
 }    
-
 if ((!isset($_POST['verified'])) || ($_POST['verified'] == '')) { header('Location: ../index.php?error=1'); exit();}
 elseif ((!isset($_POST['package'])) || ($_POST['package'] == '')) { header('Location: ../index.php?error=1'); exit();}
 elseif ((!isset($_POST['type'])) || ($_POST['type'] == '')) { header('Location: ../index.php?error=1'); exit();}
@@ -39,15 +38,15 @@ elseif ((!isset($_POST['type'])) || ($_POST['type'] == '')) { header('Location: 
 if($_POST['type'] == 'free') {
     $con=mysqli_connect($mysql_server,$mysql_uname,$mysql_pw,$mysql_db);
     $v1 = mysqli_real_escape_string($con, $_POST['package']);
-    $droprow= "INSERT INTO `" . $mysql_table . "billing-plans` (PACKAGE, ID, DISPLAY) VALUES ('".$v1."','', 'true') ON DUPLICATE KEY UPDATE DISPLAY='true';";
+    $droprow= "DELETE FROM `" . $mysql_table . "billing-plans` WHERE `package` = '".$v1."';";
     if (mysqli_query($con, $droprow)) { $r1 = '0'; } else { $r1 = mysqli_errno($con); }
     mysqli_close($con);
 }
 if($_POST['type'] != 'free') {
     $con=mysqli_connect($mysql_server,$mysql_uname,$mysql_pw,$mysql_db);
     $v1 = mysqli_real_escape_string($con, $_POST['package']);
-    $droprow= "UPDATE `" . $mysql_table . "billing-plans` SET `DISPLAY` = 'true' WHERE `package` = '".$v1."';";
-    if (mysqli_query($con, $droprow)) { $r1 = '0'; } else { $r1 =  mysqli_errno($con); }
+    $droprow= "UPDATE `" . $mysql_table . "billing-plans` SET `DISPLAY` = 'false' WHERE `package` = '".$v1."';";
+    if (mysqli_query($con, $droprow)) { $r1 = '0'; } else { $r1 = mysqli_errno($con); }
     mysqli_close($con);
 }
 echo $r1;

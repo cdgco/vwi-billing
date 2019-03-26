@@ -37,21 +37,22 @@ if(!isset($_GET['id']) || $_GET['id'] == ''){ header("Location: index.php?error=
 if($configstyle != '2') {
     $con=mysqli_connect($mysql_server,$mysql_uname,$mysql_pw,$mysql_db);
     $billingconfig = array(); $billingresult=mysqli_query($con,"SELECT VARIABLE,VALUE FROM `" . $mysql_table . "billing-config`");
+    $billingplans = array(); $billingresult2=mysqli_query($con,"SELECT PACKAGE,ID,DISPLAY FROM `" . $mysql_table . "billing-plans`");
+    $billingcustomers = array(); $billingresult3=mysqli_query($con,"SELECT username,ID FROM `" . $mysql_table . "billing-customers`");
     while ($bcrow = mysqli_fetch_assoc($billingresult)) { $billingconfig[$bcrow["VARIABLE"]] = $bcrow["VALUE"]; }
-    mysqli_free_result($billingresult); mysqli_close($con);
-    
-    $con=mysqli_connect($mysql_server,$mysql_uname,$mysql_pw,$mysql_db);
-    $billingplans = array(); $billingresult2=mysqli_query($con,"SELECT PACKAGE,ID FROM `" . $mysql_table . "billing-plans`");
-    while ($bprow = mysqli_fetch_assoc($billingresult2)) { $billingplans[$bprow["PACKAGE"]] = $bprow["ID"]; }
-    mysqli_free_result($billingresult2); mysqli_close($con);
+    while ($bprow = mysqli_fetch_assoc($billingresult2)) { $billingplans[$bprow["PACKAGE"]] = ['NAME' => $bprow["PACKAGE"], 'ID' => $bprow["ID"], 'DISPLAY' => $bprow["DISPLAY"]]; }
+    while ($burow = mysqli_fetch_assoc($billingresult3)) { $billingcustomers[$burow["username"]] = $burow["ID"]; }
+    mysqli_free_result($billingresult);mysqli_free_result($billingresult2);mysqli_free_result($billingresult3);mysqli_close($con);
 }
 else {
     
     if (!$con) { $billingconfig = json_decode(file_get_contents( $co1 . 'billingconfig.json'), true);
-                 $billingplans = json_decode(file_get_contents( $co1 . 'billingplans.json'), true); }
+                 $billingplans = json_decode(file_get_contents( $co1 . 'billingplans.json'), true);
+               $billingcustomers = json_decode(file_get_contents( $co1 . 'billingcustomers.json'), true);}
     else { 
         $con=mysqli_connect($mysql_server,$mysql_uname,$mysql_pw,$mysql_db);
-        $billingconfig = array(); $billingresult=mysqli_query($con,"SELECT PACKAGE,PLAN FROM `" . $mysql_table . "billing-config`");
+        
+        $billingconfig = array(); $billingresult=mysqli_query($con,"SELECT VARIABLE,VALUE FROM `" . $mysql_table . "billing-config`");
         while ($bcrow = mysqli_fetch_assoc($billingresult)) { $billingconfig[$bcrow["VARIABLE"]] = $bcrow["VALUE"]; }
         mysqli_free_result($billingresult); mysqli_close($con);
         if (!file_exists( $co1 . 'billingconfig.json' )) { 
@@ -61,15 +62,23 @@ else {
             file_put_contents( $co1 . "billingconfig.json",json_encode($billingconfig)); 
         }
         
-        $con=mysqli_connect($mysql_server,$mysql_uname,$mysql_pw,$mysql_db);
-        $billingplans = array(); $billingresult2=mysqli_query($con,"SELECT PACKAGE,ID FROM `" . $mysql_table . "billing-plans`");
-        while ($bprow = mysqli_fetch_assoc($billingresult2)) { $billingconfig2[$bprow["PACKAGE"]] = $bcrow["ID"]; }
+        $billingplans = array(); $billingresult2=mysqli_query($con,"SELECT PACKAGE,ID,DISPLAY FROM `" . $mysql_table . "billing-plans`");
+        while ($bprow = mysqli_fetch_assoc($billingresult2)) { $billingplans[$bprow["PACKAGE"]] = ['NAME' => $bprow["PACKAGE"], 'ID' => $bprow["ID"], 'DISPLAY' => $bprow["DISPLAY"]]; }
         mysqli_free_result($billingresult2); mysqli_close($con);
         if (!file_exists( $co1 . 'billingplans.json' )) { 
             file_put_contents( $co1 . "billingplans.json",json_encode($billingplans));
         }  
         elseif ((time()-filemtime( $co1 . "billingplans.json")) > 1800 || $billingplans != json_decode(file_get_contents( $co1 . 'billingplans.json'), true)) { 
             file_put_contents( $co1 . "billingplans.json",json_encode($billingplans)); 
+        }
+        $billingcustomers = array(); $billingresult3=mysqli_query($con,"SELECT PACKAGE,ID,DISPLAY FROM `" . $mysql_table . "billing-plans`");
+        while ($burow = mysqli_fetch_assoc($billingresult3)) { $billingcustomers[$burow["username"]] = $burow["ID"]; }
+        mysqli_free_result($billingresult3); mysqli_close($con);
+        if (!file_exists( $co1 . 'billingcustomers.json' )) { 
+            file_put_contents( $co1 . "billingcustomers.json",json_encode($billingcustomers));
+        }  
+        elseif ((time()-filemtime( $co1 . "billingcustomers.json")) > 1800 || $billingcustomers != json_decode(file_get_contents( $co1 . 'billingcustomers.json'), true)) { 
+            file_put_contents( $co1 . "billingcustomers.json",json_encode($billingcustomers)); 
         }
         
     }

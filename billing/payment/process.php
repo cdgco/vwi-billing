@@ -30,7 +30,7 @@ if(isset($_SESSION['loggedin'])) {
 }
 if(isset($regenabled) && $regenabled != 'true'){ header("Location: ../../../error-pages/403.html"); }
 
-if(!in_array('vwi-billing', $plugins)) {
+if(!in_array('billing', $plugins)) {
     header( 'Location: ../../../register.php' ); exit();
 }    
     
@@ -47,20 +47,21 @@ elseif ((!isset($_POST['plan-x'])) || ($_POST['plan-x'] == '')) { header('Locati
 if($configstyle != '2') {
     $con=mysqli_connect($mysql_server,$mysql_uname,$mysql_pw,$mysql_db);
     $billingconfig = array(); $billingresult=mysqli_query($con,"SELECT VARIABLE,VALUE FROM `" . $mysql_table . "billing-config`");
-    while ($bcrow = mysqli_fetch_assoc($billingresult)) { $billingconfig[$bcrow["VARIABLE"]] = $bcrow["VALUE"]; }
-    mysqli_free_result($billingresult); mysqli_close($con);
-    
-    $con=mysqli_connect($mysql_server,$mysql_uname,$mysql_pw,$mysql_db);
     $billingplans = array(); $billingresult2=mysqli_query($con,"SELECT PACKAGE,ID,DISPLAY FROM `" . $mysql_table . "billing-plans`");
+    $billingcustomers = array(); $billingresult3=mysqli_query($con,"SELECT username,ID FROM `" . $mysql_table . "billing-customers`");
+    while ($bcrow = mysqli_fetch_assoc($billingresult)) { $billingconfig[$bcrow["VARIABLE"]] = $bcrow["VALUE"]; }
     while ($bprow = mysqli_fetch_assoc($billingresult2)) { $billingplans[$bprow["PACKAGE"]] = ['NAME' => $bprow["PACKAGE"], 'ID' => $bprow["ID"], 'DISPLAY' => $bprow["DISPLAY"]]; }
-    mysqli_free_result($billingresult2); mysqli_close($con);
+    while ($burow = mysqli_fetch_assoc($billingresult3)) { $billingcustomers[$burow["username"]] = $burow["ID"]; }
+    mysqli_free_result($billingresult);mysqli_free_result($billingresult2);mysqli_free_result($billingresult3);mysqli_close($con);
 }
 else {
     
     if (!$con) { $billingconfig = json_decode(file_get_contents( $co1 . 'billingconfig.json'), true);
-                 $billingplans = json_decode(file_get_contents( $co1 . 'billingplans.json'), true); }
+                 $billingplans = json_decode(file_get_contents( $co1 . 'billingplans.json'), true);
+               $billingcustomers = json_decode(file_get_contents( $co1 . 'billingcustomers.json'), true);}
     else { 
         $con=mysqli_connect($mysql_server,$mysql_uname,$mysql_pw,$mysql_db);
+        
         $billingconfig = array(); $billingresult=mysqli_query($con,"SELECT VARIABLE,VALUE FROM `" . $mysql_table . "billing-config`");
         while ($bcrow = mysqli_fetch_assoc($billingresult)) { $billingconfig[$bcrow["VARIABLE"]] = $bcrow["VALUE"]; }
         mysqli_free_result($billingresult); mysqli_close($con);
@@ -71,7 +72,6 @@ else {
             file_put_contents( $co1 . "billingconfig.json",json_encode($billingconfig)); 
         }
         
-        $con=mysqli_connect($mysql_server,$mysql_uname,$mysql_pw,$mysql_db);
         $billingplans = array(); $billingresult2=mysqli_query($con,"SELECT PACKAGE,ID,DISPLAY FROM `" . $mysql_table . "billing-plans`");
         while ($bprow = mysqli_fetch_assoc($billingresult2)) { $billingplans[$bprow["PACKAGE"]] = ['NAME' => $bprow["PACKAGE"], 'ID' => $bprow["ID"], 'DISPLAY' => $bprow["DISPLAY"]]; }
         mysqli_free_result($billingresult2); mysqli_close($con);
@@ -80,6 +80,15 @@ else {
         }  
         elseif ((time()-filemtime( $co1 . "billingplans.json")) > 1800 || $billingplans != json_decode(file_get_contents( $co1 . 'billingplans.json'), true)) { 
             file_put_contents( $co1 . "billingplans.json",json_encode($billingplans)); 
+        }
+        $billingcustomers = array(); $billingresult3=mysqli_query($con,"SELECT PACKAGE,ID,DISPLAY FROM `" . $mysql_table . "billing-plans`");
+        while ($burow = mysqli_fetch_assoc($billingresult3)) { $billingcustomers[$burow["username"]] = $burow["ID"]; }
+        mysqli_free_result($billingresult3); mysqli_close($con);
+        if (!file_exists( $co1 . 'billingcustomers.json' )) { 
+            file_put_contents( $co1 . "billingcustomers.json",json_encode($billingcustomers));
+        }  
+        elseif ((time()-filemtime( $co1 . "billingcustomers.json")) > 1800 || $billingcustomers != json_decode(file_get_contents( $co1 . 'billingcustomers.json'), true)) { 
+            file_put_contents( $co1 . "billingcustomers.json",json_encode($billingcustomers)); 
         }
         
     }
@@ -230,7 +239,14 @@ if($answer == '0' && $paidplan != 'false') {
                 header("Location: register.php?stripeerr=" . $err);
             }
             else {
+                $con=mysqli_connect($mysql_server,$mysql_uname,$mysql_pw,$mysql_db);
+                $v1 = mysqli_real_escape_string($con, $username1);
+                $v2 = mysqli_real_escape_string($con, $cus_id);
+                $addrow= "INSERT INTO `" . $mysql_table . "billing-customers` (username, ID) VALUES ('".$v1."','".$v2."') ON DUPLICATE KEY UPDATE ID='".$v2."';";
+                if (mysqli_query($con, $addrow)) { $r1 = '0'; } else { header("Location: register.php?mysqlerr=" . mysqli_errno($con)); }
+                mysqli_close($con);
                 $invoicelink = json_decode($curinvoice->__toJSON(), true)['hosted_invoice_url'];
+                
             }
         }
     }
