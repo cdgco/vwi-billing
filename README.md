@@ -10,9 +10,9 @@ This plugin is currently under active development and is not able to be installe
  - Control public registration of paid and free packages
  - Provide invoices with purchases
  - Complete Stripe currency support (134 Currencies supported)
+ - User Billing Dashboard
  
  #### Coming Soon:
- - View payments, invoices, plans, upcoming charges, etc. from user console.
  - Cron job to check user status
     - Suspend user if unpaid
     - Cancel plan if account closed
