@@ -661,7 +661,7 @@ foreach ($plugins as $result) {
                                                     } 
                                                     echo '</td>
                                                     <td>
-                                                        <a href="#"><button type="button" data-toggle="tooltip" data-original-title="' . _("Edit") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="ti-pencil-alt"></i></button></a>
+                                                        <a href="edit/card.php?card-id=' . $customercard[$x1]['id'] . '"><button type="button" data-toggle="tooltip" data-original-title="' . _("Edit") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="ti-pencil-alt"></i></button></a>
                                                         <button onclick="deleteCard(\'' . $customercard[$x1]['id'] . '\')" type="button" data-toggle="tooltip" data-original-title="' . _("Delete") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="fa fa-times"></i></button>';
                                                     if($currentcustomer['default_source'] != $customercard[$x1]['id']){ 
                                                             echo '<button onclick="makeDefault(\'' . $customercard[$x1]['id'] . '\')" type="button" data-toggle="tooltip" data-original-title="' . _("Make Default") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="fa fa-star"></i></button>';

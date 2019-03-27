@@ -158,6 +158,7 @@ foreach ($plugins as $result) {
         <link href="../../components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="../../components/metismenu/dist/metisMenu.min.css" rel="stylesheet">
         <link href="../../components/select2/select2.min.css" rel="stylesheet">
+        <link href="../../components/bootstrap-datepicker/bootstrap-datepicker3.standalone.min.css" rel="stylesheet"/>
         <link href="../../components/animate.css/animate.min.css" rel="stylesheet">
         <link rel="stylesheet" href="../../components/sweetalert2/sweetalert2.min.css" />
         <link href="../../components/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet"/>
@@ -243,48 +244,55 @@ foreach ($plugins as $result) {
                 <div class="container-fluid">
                     <div class="row bg-title">
                         <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
-                            <h4 class="page-title"><?php echo _("Edit Card"); ?></h4>
+                            <h4 class="page-title"><?php echo _("Edit ") . $currentcard['brand'] . ' **** '. $currentcard['last4']; ?></h4>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="white-box">
                                 <form class="form-horizontal form-material" data-toggle="validator" autocomplete="off" action="../change/card.php" id="form" method="post">
+                                    <input type="hidden" class="form-control" name="card-id" value="<?php print_r($_GET['card-id']); ?>">
                                     <div class="form-group">
                                         <label class="col-md-12"><?php echo _("Cardholder's Name"); ?></label>
                                         <div class="col-md-12">
-                                            <input type="text" class="form-control" id="name" value="<?php print_r($currentcard['name']); ?>">
+                                            <input type="text" class="form-control" id="name" name="name" value="<?php print_r($currentcard['name']); ?>">
+                                        </div>
+                                    </div>
+                                    <div class="form-group" id="date2" style="overflow: visible;">
+                                        <label class="col-md-12"><?php echo _("Expiration Date"); ?></label>
+                                        <div class="col-md-12" id='date'>
+                                            <input type="text" class="form-control datepicker" name="date" value="<?php echo $currentcard['exp_month'].' / '.$currentcard['exp_year']; ?>">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-md-12"><?php echo _("Street Address"); ?></label>
                                         <div class="col-md-12">
-                                            <input type="text" class="form-control" id="address" value="<?php print_r($currentcard['address_line1']); ?>">
+                                            <input type="text" class="form-control" id="address" name="address" value="<?php print_r($currentcard['address_line1']); ?>">
                                         </div>
                                     </div>
                                     
                                     <div class="form-group">
                                         <label class="col-md-12"><?php echo _("City"); ?></label>
                                         <div class="col-md-12">
-                                            <input type="text" class="form-control" id="city" value="<?php print_r($currentcard['address_city']); ?>">
+                                            <input type="text" class="form-control" id="city" name="city" value="<?php print_r($currentcard['address_city']); ?>">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-md-12"><?php echo _("State"); ?></label>
                                         <div class="col-md-12">
-                                            <input type="text" class="form-control" id="state" value="<?php print_r($currentcard['address_state']); ?>">
+                                            <input type="text" class="form-control" id="state" name="state" value="<?php print_r($currentcard['address_state']); ?>">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-md-12"><?php echo _("Zip Code"); ?></label>
                                         <div class="col-md-12">
-                                            <input type="text" class="form-control" id="zip" required value="<?php print_r($currentcard['address_zip']); ?>">
+                                            <input type="text" class="form-control" id="zip" required name="zip" value="<?php print_r($currentcard['address_zip']); ?>">
                                         </div>
                                     </div>
                                     <div class="form-group" style="overflow: visible;">
                                             <label class="col-md-12"><?php echo _("Country"); ?></label>
                                             <div class="col-md-12">
-                                                <select class="form-control select2" id="country">
+                                                <select class="form-control select2" name="country" id="country">
                                                     <option value="AF">Afghanistan</option>
                                                     <option value="AX">Åland Islands</option>
                                                     <option value="AL">Albania</option>
@@ -575,6 +583,14 @@ foreach ($plugins as $result) {
             var processLocation = "../../../process/";
             $(document).ready(function() {
                 $('.select2').select2();
+            });
+            $(".datepicker").datepicker( {
+                format: "mm/yyyy",
+                startView: 1,
+                minViewMode: 1,
+                maxViewMode: 3,
+                zIndexOffset: 1001,
+                container:'#date'
             });
             $('#form').submit(function(ev) {
                 ev.preventDefault();
