@@ -47,7 +47,7 @@ To use a Restricted API Key, create a new key in your Stripe developer console w
  - Tokens
     
 
-# Disaclaimer
+# Disclaimer
 
 Vesta Web Interface and the VWI-Billing Plugin are licensed under the terms of version 3 of the GNU General Public License as published by the Free Software Foundation.
 
