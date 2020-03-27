@@ -123,10 +123,10 @@ $billingdata = array_values($billingplans);
 $serverconnection = array_values(json_decode(curl_exec($curl1), true))[0]['OS'];
     
 
-setlocale(LC_CTYPE, $locale);
-setlocale(LC_MESSAGES, $locale);
-bindtextdomain('messages', 'locale');
-textdomain('messages');
+_setlocale(LC_CTYPE, $locale);
+_setlocale(LC_MESSAGES, $locale);
+_bindtextdomain('messages', 'locale');
+_textdomain('messages');
 
 $searchpackage = array_search($_POST['plan-x'], $billingname);
 if($billingdata[$searchpackage]['NAME'] === $_POST['plan-x'] && $billingdata[$searchpackage]['DISPLAY'] == 'true') {
@@ -261,7 +261,7 @@ if($answer == '0' && $paidplan != 'false') {
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" type="image/png" sizes="16x16" href="../../images/favicon.png">
-        <title><?php echo $sitetitle; ?> - <?php echo _('Register'); ?></title>
+        <title><?php echo $sitetitle; ?> - <?php echo __('Register'); ?></title>
         <link href="../../components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="../../components/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet">
         <link href="../../components/sweetalert2/sweetalert2.min.css" rel="stylesheet">
@@ -306,14 +306,14 @@ if($answer == '0' && $paidplan != 'false') {
                 <div class="inner-panel">
                     <a href="javascript:void(0)" class="p-20 di"><img src="../../images/<?php echo $cpicon; ?>" class="logo-1"></a>
                     <div class="lg-content">
-                        <h2><?php echo $sitetitle; ?> <?php echo _('Control Panel'); ?> <br></h2><p><?php require '../../../includes/versioncheck.php'; ?></p>
+                        <h2><?php echo $sitetitle; ?> <?php echo __('Control Panel'); ?> <br></h2><p><?php require '../../../includes/versioncheck.php'; ?></p>
                     </div>
                 </div>
             </div>
 
             <div class="new-login-box">
                 <div class="white-box">
-                    <h3 class="box-title m-b-0"><?php echo _('Sign up for'); ?> <?php echo $sitetitle; ?></h3> <small><?php echo _('Subscription Complete'); ?></small>
+                    <h3 class="box-title m-b-0"><?php echo __('Sign up for'); ?> <?php echo $sitetitle; ?></h3> <small><?php echo __('Subscription Complete'); ?></small>
                     <form class="form-horizontal new-lg-form" method="get" id="loginform" action="../../../login.php">                         
                         <div class="form-group text-center m-t-20">
                             <div class="col-xs-12">
@@ -345,8 +345,8 @@ if($answer == '0' && $paidplan != 'false') {
         <script type="text/javascript">
             
             function loadLoader(){
-                swal({
-                    title: '<?php echo _("Loading"); ?>',
+                swal.fire({
+                    title: '<?php echo __("Loading"); ?>',
                     text: '',
                     onOpen: function () {
                         swal.showLoading()
@@ -370,16 +370,16 @@ if($answer == '0' && $paidplan != 'false') {
             if($configstyle == '2'){
                 if($warningson == "all"){
                     if(substr(sprintf('%o', fileperms($configlocation)), -4) == '0777') {
-                        echo "toast1({ 
-                                text: '"._("Includes folder has not been secured")."',
+                        echo "toast1.fire({ 
+                                text: '".__("Includes folder has not been secured")."',
                                 type: 'warning'
                             });";
 
                     } 
                     if(isset($mysqldown) && $mysqldown == 'yes') {
-                        echo "toast2({
-                                title: '" . _("Database Error") . "',
-                                text: '" . _("MySQL Server Failed To Connect") . "',
+                        echo "toast2.fire({
+                                title: '" . __("Database Error") . "',
+                                text: '" . __("MySQL Server Failed To Connect") . "',
                                 type: 'error'
                             });";
                     } 
@@ -387,24 +387,24 @@ if($answer == '0' && $paidplan != 'false') {
             }
             else {
                 if(substr(sprintf('%o', fileperms($configlocation)), -4) == '0777') {
-                    echo "toast1({ 
-                            text: '"._("Includes folder has not been secured")."',
+                    echo "toast1.fire({ 
+                            text: '".__("Includes folder has not been secured")."',
                             type: 'warning'
                         });";
 
                 } 
                 if(isset($mysqldown) && $mysqldown == 'yes') {
-                    echo "toast2({
-                           title: '" . _("Database Error") . "',
-                            text: '" . _("MySQL Server Failed To Connect") . "',
+                    echo "toast2.fire({
+                           title: '" . __("Database Error") . "',
+                            text: '" . __("MySQL Server Failed To Connect") . "',
                             type: 'error'
                         });";
 
                 }    
             }
             if(!isset($serverconnection)){
-            echo "toast2({
-                    text: '" . _("Failed to connect to server. Please check config.") . "',
+            echo "toast2.fire({
+                    text: '" . __("Failed to connect to server. Please check config.") . "',
                     type: 'error'
             });"; }
             ?>

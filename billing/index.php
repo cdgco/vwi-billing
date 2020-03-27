@@ -109,9 +109,10 @@ $billingname = array_keys($billingplans);
 $billingdata = array_values($billingplans);
 $useremail = $admindata['CONTACT'];
 if(isset($admindata['LANGUAGE'])){ $locale = $ulang[$admindata['LANGUAGE']]; }
-setlocale("LC_CTYPE", $locale); setlocale("LC_MESSAGES", $locale);
-bindtextdomain('messages', '../../locale');
-textdomain('messages');
+_setlocale("LC_CTYPE", $locale); 
+_setlocale("LC_MESSAGES", $locale);
+_bindtextdomain('messages', '../../locale');
+_textdomain('messages');
 
 foreach ($plugins as $result) {
     if (file_exists('../' . $result)) {
@@ -141,7 +142,7 @@ foreach ($plugins as $result) {
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" type="image/ico" href="../images/<?php echo $cpfavicon; ?>">
-        <title><?php echo $sitetitle; ?> - <?php echo _("Billing"); ?></title>
+        <title><?php echo $sitetitle; ?> - <?php echo __("Billing"); ?></title>
         <link href="../components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="../components/metismenu/dist/metisMenu.min.css" rel="stylesheet">
         <link href="../components/select2/select2.min.css" rel="stylesheet">
@@ -202,7 +203,7 @@ foreach ($plugins as $result) {
                     <ul class="nav navbar-top-links navbar-right pull-right">
                         <li>
                             <form class="app-search m-r-10" id="searchform" action="../../process/search.php" method="get">
-                                <input type="text" placeholder="<?php echo _("Search..."); ?>" class="form-control" name="q"> <a href="javascript:void(0);" onclick="document.getElementById('searchform').submit();"><i class="fa fa-search"></i></a> </form>
+                                <input type="text" placeholder="<?php echo __("Search..."); ?>" class="form-control" name="q"> <a href="javascript:void(0);" onclick="document.getElementById('searchform').submit();"><i class="fa fa-search"></i></a> </form>
                         </li>
                         <li class="dropdown">
                             <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#"><b class="hidden-xs"><?php print_r($displayname); ?></b><span class="caret"></span> </a>
@@ -215,10 +216,10 @@ foreach ($plugins as $result) {
                                     </div>
                                 </li>
                                 <li role="separator" class="divider"></li>
-                                <li><a href="../../profile.php"><i class="ti-home"></i> <?php echo _("My Account"); ?></a></li>
-                                <li><a href="../../profile.php?settings=open"><i class="ti-settings"></i> <?php echo _("Account Settings"); ?></a></li>
+                                <li><a href="../../profile.php"><i class="ti-home"></i> <?php echo __("My Account"); ?></a></li>
+                                <li><a href="../../profile.php?settings=open"><i class="ti-settings"></i> <?php echo __("Account Settings"); ?></a></li>
                                 <li role="separator" class="divider"></li>
-                                <li><a href="../../process/logout.php"><i class="fa fa-power-off"></i> <?php echo _("Logout"); ?></a></li>
+                                <li><a href="../../process/logout.php"><i class="fa fa-power-off"></i> <?php echo __("Logout"); ?></a></li>
                             </ul>
                         </li>
                     </ul>
@@ -232,7 +233,7 @@ foreach ($plugins as $result) {
                                 <i class="ti-menu hidden-xs"></i>
                                 <i class="ti-close visible-xs"></i>
                             </span> 
-                            <span class="hide-menu"><?php echo _("Navigation"); ?></span>
+                            <span class="hide-menu"><?php echo __("Navigation"); ?></span>
                         </h3>  
                     </div>
                     <ul class="nav" id="side-menu">
@@ -248,24 +249,24 @@ foreach ($plugins as $result) {
                 <div class="container-fluid">
                     <div class="row bg-title">
                         <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
-                            <h4 class="page-title"><?php echo _("Billing"); ?></h4>
+                            <h4 class="page-title"><?php echo __("Billing"); ?></h4>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="white-box">
-                                <h3 class="box-title m-b-0"><?php echo _("Active Plans"); ?></h3><br>
+                                <h3 class="box-title m-b-0"><?php echo __("Active Plans"); ?></h3><br>
                                 <div class="table-responsive">
                                 <table class="table footable m-b-0" data-paging="false" data-sorting="true">
                                     <thead>
                                         <tr>
-                                            <th><?php echo _("Package"); ?></th>
-                                            <th><?php echo _("Product Name"); ?></th>
-                                            <th><?php echo _("Price"); ?></th>
-                                            <th><?php echo _("Trial"); ?></th>
-                                            <th><?php echo _("Public Registration"); ?></th>
-                                            <th><?php echo _("Created"); ?></th>
-                                            <th data-sortable="false"><?php echo _("Action"); ?></th>
+                                            <th><?php echo __("Package"); ?></th>
+                                            <th><?php echo __("Product Name"); ?></th>
+                                            <th><?php echo __("Price"); ?></th>
+                                            <th><?php echo __("Trial"); ?></th>
+                                            <th><?php echo __("Public Registration"); ?></th>
+                                            <th><?php echo __("Created"); ?></th>
+                                            <th data-sortable="false"><?php echo __("Action"); ?></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -320,15 +321,15 @@ foreach ($plugins as $result) {
                     echo '</td>
                         <td>';
                     if($billingdata[$searchpackage]['DISPLAY'] == 'true') { echo '
-                        <button onclick="disablePublic(\'' . $packname[$x1] . '\', \'paid\')" type="button" data-toggle="tooltip" data-original-title="' . _("Disable") . '" class="btn color-button btn-outline btn-md m-r-5 hover-top"><i class="fa fa-check h-hide"></i><i class="fa fa-times h-show"></i></button>';
+                        <button onclick="disablePublic(\'' . $packname[$x1] . '\', \'paid\')" type="button" data-toggle="tooltip" data-original-title="' . __("Disable") . '" class="btn color-button btn-outline btn-md m-r-5 hover-top"><i class="fa fa-check h-hide"></i><i class="fa fa-times h-show"></i></button>';
                     }
                     else {
                         echo '
-                        <button onclick="enablePublic(\'' . $packname[$x1] . '\', \'paid\')" type="button" data-toggle="tooltip" data-original-title="' . _("Enable") . '" class="btn color-button btn-outline btn-md m-r-5 hover-top"><i class="fa fa-times h-hide"></i><i class="fa fa-check h-show"></i></button>';
+                        <button onclick="enablePublic(\'' . $packname[$x1] . '\', \'paid\')" type="button" data-toggle="tooltip" data-original-title="' . __("Enable") . '" class="btn color-button btn-outline btn-md m-r-5 hover-top"><i class="fa fa-times h-hide"></i><i class="fa fa-check h-show"></i></button>';
                     }
                         echo '</td><td>' . date("Y-d-m", $currentplan['created']) . '</td>
-                        <td><a href="edit.php?package=' . $packname[$x1] . '"><button type="button" data-toggle="tooltip" data-original-title="' . _("Edit") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="fa fa-edit"></i></button></a><span>
-                        <button onclick="confirmDeactivate(\'' . $packname[$x1] . '\', \'' . $billingdata[$searchpackage]['ID'] . '\')" type="button" data-toggle="tooltip" data-original-title="' . _("Deactivate") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="fa fa-times"></i></button>
+                        <td><a href="edit.php?package=' . $packname[$x1] . '"><button type="button" data-toggle="tooltip" data-original-title="' . __("Edit") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="fa fa-edit"></i></button></a><span>
+                        <button onclick="confirmDeactivate(\'' . $packname[$x1] . '\', \'' . $billingdata[$searchpackage]['ID'] . '\')" type="button" data-toggle="tooltip" data-original-title="' . __("Deactivate") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="fa fa-times"></i></button>
                     </td>
                     </tr>'; 
                 }
@@ -341,14 +342,14 @@ foreach ($plugins as $result) {
                                 </table>
                                 </div>
                                 <br>
-                                <h3 class="box-title m-b-0"><?php echo _("Inactive Plans"); ?></h3><br>
+                                <h3 class="box-title m-b-0"><?php echo __("Inactive Plans"); ?></h3><br>
                                 <div class="table-responsive">
                                 <table class="table footable m-b-0" data-paging="false" data-sorting="true">
                                     <thead>
                                         <tr>
-                                            <th><?php echo _("Package"); ?></th>
-                                            <th><?php echo _("Public / Free Registration"); ?></th>
-                                            <th data-sortable="false"><?php echo _("Action"); ?></th>
+                                            <th><?php echo __("Package"); ?></th>
+                                            <th><?php echo __("Public / Free Registration"); ?></th>
+                                            <th data-sortable="false"><?php echo __("Action"); ?></th>
                                             
                                         </tr>
                                     </thead>
@@ -368,15 +369,15 @@ foreach ($plugins as $result) {
                                                     <td>';
                                                     
                                                     if($billingdata[$searchpackage2]['NAME'] == $packname[$x2] && $billingdata[$searchpackage2]['DISPLAY'] == 'true') { echo '
-                                                    <button onclick="disablePublic(\'' . $packname[$x2] . '\', \'free\')" type="button" data-toggle="tooltip" data-original-title="' . _("Disable") . '" class="btn color-button btn-outline btn-md m-r-5 hover-top"><i class="fa fa-check h-hide"></i><i class="fa fa-times h-show"></i></button>';
+                                                    <button onclick="disablePublic(\'' . $packname[$x2] . '\', \'free\')" type="button" data-toggle="tooltip" data-original-title="' . __("Disable") . '" class="btn color-button btn-outline btn-md m-r-5 hover-top"><i class="fa fa-check h-hide"></i><i class="fa fa-times h-show"></i></button>';
                                                 }
                                                 else {
                                                     echo '
-                                                    <button onclick="enablePublic(\'' . $packname[$x2] . '\', \'free\')" type="button" data-toggle="tooltip" data-original-title="' . _("Enable") . '" class="btn color-button btn-outline btn-md m-r-5 hover-top"><i class="fa fa-times h-hide"></i><i class="fa fa-check h-show"></i></button>';
+                                                    <button onclick="enablePublic(\'' . $packname[$x2] . '\', \'free\')" type="button" data-toggle="tooltip" data-original-title="' . __("Enable") . '" class="btn color-button btn-outline btn-md m-r-5 hover-top"><i class="fa fa-times h-hide"></i><i class="fa fa-check h-show"></i></button>';
                                                 }
                                                     
                                                     echo '</td>
-                                                    <td><a href="add.php?package=' . $packname[$x2] . '"><button type="button" data-toggle="tooltip" data-original-title="' . _("Setup") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="fa fa-cog"></i></button></a><span></td>
+                                                    <td><a href="add.php?package=' . $packname[$x2] . '"><button type="button" data-toggle="tooltip" data-original-title="' . __("Setup") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="fa fa-cog"></i></button></a><span></td>
                                                 </tr>'; }
                                                 $x2++;
                                                     
@@ -415,17 +416,17 @@ foreach ($plugins as $result) {
             function confirmDeactivate(e, f){
                 e1 = String(e);
                 f1 = String(f);
-                swal({
-                    title: '<?php echo _("Deactivate Plan:"); ?> ' + e1 + ' ?',
-                    text: "<?php echo _("You won't be able to revert this!"); ?>",
+                swal.fire({
+                    title: '<?php echo __("Deactivate Plan:"); ?> ' + e1 + ' ?',
+                    text: "<?php echo __("You won't be able to revert this!"); ?>",
                     type: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: '<?php echo _("Yes, deactivate it!"); ?>'
+                    confirmButtonText: '<?php echo __("Yes, deactivate it!"); ?>'
                 }).then(function () {
-                    swal({
-                        title: '<?php echo _("Processing"); ?>',
+                    swal.fire({
+                        title: '<?php echo __("Processing"); ?>',
                         text: '',
                         onOpen: function () {
                             swal.showLoading()
@@ -439,8 +440,8 @@ foreach ($plugins as $result) {
             function disablePublic(e, f){
                 e1 = String(e);
                 f1 = String(f);
-                swal({
-                    title: '<?php echo _("Processing"); ?>',
+                swal.fire({
+                    title: '<?php echo __("Processing"); ?>',
                     text: '',
                     onOpen: function () {
                         swal.showLoading()
@@ -454,17 +455,17 @@ foreach ($plugins as $result) {
                         success: function(data){
                             swal.close();
                             if(data == '0'){
-                                swal({title:'<?php echo _("Successfully Updated!"); ?>', type:'success', allowOutsideClick:false, allowEscapeKey:false, allowEnterKey:false, onOpen: function () {swal.showLoading()}});
+                                swal.fire({title:'<?php echo __("Successfully Updated!"); ?>', type:'success', allowOutsideClick:false, allowEscapeKey:false, allowEnterKey:false, onOpen: function () {swal.showLoading()}});
                                 window.location="index.php";
                             }
                             else {
-                                swal({title:'<?php echo _("Error Updating Package"); ?>', html:'<?php echo _("Please try again or contact support."); ?> <br><br><span onclick="$(\'.errortoggle\').toggle();" class="swal-error-title">View Error Code <i class="errortoggle fa fa-angle-double-right"></i><i style="display:none;" class="errortoggle fa fa-angle-double-down"></i></span><span class="errortoggle" style="display:none;"><br><br>(MySQL Error: ' + data + ')</span>', type:'error'});
+                                swal.fire({title:'<?php echo __("Error Updating Package"); ?>', html:'<?php echo __("Please try again or contact support."); ?> <br><br><span onclick="$(\'.errortoggle\').toggle();" class="swal-error-title">View Error Code <i class="errortoggle fa fa-angle-double-right"></i><i style="display:none;" class="errortoggle fa fa-angle-double-down"></i></span><span class="errortoggle" style="display:none;"><br><br>(MySQL Error: ' + data + ')</span>', type:'error'});
                             }
 
                         },
                         error: function(){
                             swal.close();
-                            swal({title:'<?php echo _("Please try again later or contact support."); ?>', type:'error'});
+                            swal.fire({title:'<?php echo __("Please try again later or contact support."); ?>', type:'error'});
                         }  
                     }),
                     function () {},
@@ -476,8 +477,8 @@ foreach ($plugins as $result) {
             function enablePublic(e, f){
                 e1 = String(e);
                 f1 = String(f);
-                swal({
-                    title: '<?php echo _("Processing"); ?>',
+                swal.fire({
+                    title: '<?php echo __("Processing"); ?>',
                     text: '',
                     onOpen: function () {
                         swal.showLoading()
@@ -491,17 +492,17 @@ foreach ($plugins as $result) {
                         success: function(data){
                             swal.close();
                             if(data == '0'){
-                                swal({title:'<?php echo _("Successfully Updated!"); ?>', type:'success', allowOutsideClick:false, allowEscapeKey:false, allowEnterKey:false, onOpen: function () {swal.showLoading()}});
+                                swal.fire({title:'<?php echo __("Successfully Updated!"); ?>', type:'success', allowOutsideClick:false, allowEscapeKey:false, allowEnterKey:false, onOpen: function () {swal.showLoading()}});
                                 window.location="index.php";
                             }
                             else {
-                                swal({title:'<?php echo _("Error Updating Package"); ?>', html:'<?php echo _("Please try again or contact support."); ?> <br><br><span onclick="$(\'.errortoggle\').toggle();" class="swal-error-title">View Error Code <i class="errortoggle fa fa-angle-double-right"></i><i style="display:none;" class="errortoggle fa fa-angle-double-down"></i></span><span class="errortoggle" style="display:none;"><br><br>(MySQL Error: ' + data + ')</span>', type:'error'});
+                                swal.fire({title:'<?php echo __("Error Updating Package"); ?>', html:'<?php echo __("Please try again or contact support."); ?> <br><br><span onclick="$(\'.errortoggle\').toggle();" class="swal-error-title">View Error Code <i class="errortoggle fa fa-angle-double-right"></i><i style="display:none;" class="errortoggle fa fa-angle-double-down"></i></span><span class="errortoggle" style="display:none;"><br><br>(MySQL Error: ' + data + ')</span>', type:'error'});
                             }
 
                         },
                         error: function(){
                             swal.close();
-                            swal({title:'<?php echo _("Please try again later or contact support."); ?>', type:'error'});
+                            swal.fire({title:'<?php echo __("Please try again later or contact support."); ?>', type:'error'});
                         }  
                     }),
                     function () {},
@@ -515,9 +516,9 @@ foreach ($plugins as $result) {
             includeScript();
             
             if(isset($_POST['a1']) && $_POST['a1'] == "0") {
-                echo "swal({title:'" . _("Successfully Created!") . "', type:'success'});";
+                echo "swal.fire({title:'" . __("Successfully Created!") . "', type:'success'});";
             } 
-            if(isset($_POST['a1']) && $_POST['a1'] > "0") { echo "swal({title:'Error Creating Plan.<br>Please Try Again.', type:'error'});";
+            if(isset($_POST['a1']) && $_POST['a1'] > "0") { echo "swal.fire({title:'Error Creating Plan.<br>Please Try Again.', type:'error'});";
                                                           }
             ?>
         </script>

@@ -49,9 +49,10 @@ while($curlstart <= 0) {
 $admindata = json_decode(curl_exec($curl0), true)[$username];
 $useremail = $admindata['CONTACT'];
 if(isset($admindata['LANGUAGE'])){ $locale = $ulang[$admindata['LANGUAGE']]; }
-setlocale("LC_CTYPE", $locale); setlocale("LC_MESSAGES", $locale);
-bindtextdomain('messages', '../locale');
-textdomain('messages');
+_setlocale("LC_CTYPE", $locale); 
+_setlocale("LC_MESSAGES", $locale);
+_bindtextdomain('messages', '../locale');
+_textdomain('messages');
 
 function randomPassword() { $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'; $pass = array(); $alphaLength = strlen($alphabet) - 1; for ($i = 0; $i < 19; $i++) { $n = rand(0, $alphaLength); 
 $pass[] = $alphabet[$n]; } return implode($pass); }
@@ -84,7 +85,7 @@ foreach ($plugins as $result) {
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" type="image/ico" href="../images/<?php echo $cpfavicon; ?>">
-        <title><?php echo $sitetitle; ?> - <?php echo _("Billing"); ?></title>
+        <title><?php echo $sitetitle; ?> - <?php echo __("Billing"); ?></title>
         <link href="../components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="../components/metismenu/dist/metisMenu.min.css" rel="stylesheet">
         <link href="../components/select2/select2.min.css" rel="stylesheet">
@@ -127,7 +128,7 @@ foreach ($plugins as $result) {
                     <ul class="nav navbar-top-links navbar-right pull-right">
                         <li>
                             <form class="app-search m-r-10" id="searchform" action="../../process/search.php" method="get">
-                                <input type="text" placeholder="<?php echo _("Search..."); ?>" class="form-control" name="q"> <a href="javascript:void(0);" onclick="document.getElementById('searchform').submit();"><i class="fa fa-search"></i></a> </form>
+                                <input type="text" placeholder="<?php echo __("Search..."); ?>" class="form-control" name="q"> <a href="javascript:void(0);" onclick="document.getElementById('searchform').submit();"><i class="fa fa-search"></i></a> </form>
                         </li>
                         <li class="dropdown">
                             <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#"><b class="hidden-xs"><?php print_r($displayname); ?></b><span class="caret"></span> </a>
@@ -140,10 +141,10 @@ foreach ($plugins as $result) {
                                     </div>
                                 </li>
                                 <li role="separator" class="divider"></li>
-                                <li><a href="../../profile.php"><i class="ti-home"></i> <?php echo _("My Account"); ?></a></li>
-                                <li><a href="../../profile.php?settings=open"><i class="ti-settings"></i> <?php echo _("Account Settings"); ?></a></li>
+                                <li><a href="../../profile.php"><i class="ti-home"></i> <?php echo __("My Account"); ?></a></li>
+                                <li><a href="../../profile.php?settings=open"><i class="ti-settings"></i> <?php echo __("Account Settings"); ?></a></li>
                                 <li role="separator" class="divider"></li>
-                                <li><a href="../../process/logout.php"><i class="fa fa-power-off"></i> <?php echo _("Logout"); ?></a></li>
+                                <li><a href="../../process/logout.php"><i class="fa fa-power-off"></i> <?php echo __("Logout"); ?></a></li>
                             </ul>
                         </li>
                     </ul>
@@ -157,7 +158,7 @@ foreach ($plugins as $result) {
                                 <i class="ti-menu hidden-xs"></i>
                                 <i class="ti-close visible-xs"></i>
                             </span> 
-                            <span class="hide-menu"><?php echo _("Navigation"); ?></span>
+                            <span class="hide-menu"><?php echo __("Navigation"); ?></span>
                         </h3>  
                     </div>
                     <ul class="nav" id="side-menu">
@@ -173,7 +174,7 @@ foreach ($plugins as $result) {
                 <div class="container-fluid">
                     <div class="row bg-title">
                         <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
-                            <h4 class="page-title"><?php echo _("Add Plan"); ?></h4>
+                            <h4 class="page-title"><?php echo __("Add Plan"); ?></h4>
                         </div>
                     </div>
                     <div class="row">
@@ -181,175 +182,175 @@ foreach ($plugins as $result) {
                             <div class="white-box">
                                 <form class="form-horizontal form-material" autocomplete="off" action="create.php" id="form" method="post">
                                     <div class="form-group">
-                                        <label class="col-md-12"><?php echo _("Package"); ?></label>
+                                        <label class="col-md-12"><?php echo __("Package"); ?></label>
                                         <div class="col-md-12">
                                                 <input type="text" disabled class="form-control" value="<?php echo $_GET['package']; ?>">
                                             <input type="hidden" name="package" value="<?php echo $_GET['package']; ?>">
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-md-12"><?php echo _("Product Name"); ?></label>
+                                        <label class="col-md-12"><?php echo __("Product Name"); ?></label>
                                         <div class="col-md-12">
                                                 <input type="text" class="form-control" name="name" required>
-                                                <small class="form-text text-muted"><?php echo _("This will appear on customers' receipts and invoices."); ?></small>
+                                                <small class="form-text text-muted"><?php echo __("This will appear on customers' receipts and invoices."); ?></small>
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-md-12"><?php echo _("Internal ID"); ?></label>
+                                        <label class="col-md-12"><?php echo __("Internal ID"); ?></label>
                                         <div class="col-md-12">
                                             <div class="input-group mb-2 mr-sm-2 mb-sm-0">
                                                 <div class="input-group-addon">vwi_prod_</div>
-                                                <input type="text" class="form-control" style="padding-left: 0.5%;" pattern="[0-9A-Za-z]{14,}" name="id" title="<?php echo _("14 Character Minimum. Letters & Numbers."); ?>" value="<?php echo randomPassword(); ?>" required>
+                                                <input type="text" class="form-control" style="padding-left: 0.5%;" pattern="[0-9A-Za-z]{14,}" name="id" title="<?php echo __("14 Character Minimum. Letters & Numbers."); ?>" value="<?php echo randomPassword(); ?>" required>
                                             </div>
-                                            <small class="form-text text-muted"><?php echo _("Unique Product ID used in Stripe and VWI Backend"); ?></small>
+                                            <small class="form-text text-muted"><?php echo __("Unique Product ID used in Stripe and VWI Backend"); ?></small>
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-md-12"><?php echo _("Statement Descriptor (Optional)"); ?></label>
+                                        <label class="col-md-12"><?php echo __("Statement Descriptor (Optional)"); ?></label>
                                         <div class="col-md-12">
-                                                <input type="text" maxlength="22" class="form-control" name="statement" title="<?php echo _("22 Character Maximum. Letters & Numbers."); ?>">
-                                                <small class="form-text text-muted"><?php echo _("This will appear on customers' bank statements, so make sure it's clearly recognizable."); ?></small>
+                                                <input type="text" maxlength="22" class="form-control" name="statement" title="<?php echo __("22 Character Maximum. Letters & Numbers."); ?>">
+                                                <small class="form-text text-muted"><?php echo __("This will appear on customers' bank statements, so make sure it's clearly recognizable."); ?></small>
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-md-12"><?php echo _("Currency"); ?></label>
+                                        <label class="col-md-12"><?php echo __("Currency"); ?></label>
                                         <div class="col-md-12">
                                             <select class="form-control select2" name="currency" id="selectcurrency">
-                                                <option value="usd"><?php echo _("USD - US Dollars"); ?></option>
-                                                <option value="aed"><?php echo _("AED - United Areb Emirates Dirham"); ?></option>
-                                                <option value="afn"><?php echo _("AFN - Afghan Afghani"); ?></option>
-                                                <option value="all"><?php echo _("ALL - Albanian Lek"); ?></option>
-                                                <option value="amd"><?php echo _("AMD - Armenian Dram"); ?></option>
-                                                <option value="ang"><?php echo _("ANG - Netherlands Antillean Guilder"); ?></option>
-                                                <option value="aoa"><?php echo _("AOA - Angolan Kwanza"); ?></option>
-                                                <option value="ars"><?php echo _("ARS - Argentine Peso"); ?></option>
-                                                <option value="aud"><?php echo _("AUD - Australian Dollar"); ?></option>
-                                                <option value="awg"><?php echo _("AWG - Aruban Florin"); ?></option>
-                                                <option value="azn"><?php echo _("AZN - Azerbaijani Manat"); ?></option>
-                                                <option value="bam"><?php echo _("BAM - Bosnia-Herzegovina Convertible Mark"); ?></option>
-                                                <option value="bbd"><?php echo _("BBD - Barbadian Dollar"); ?></option>
-                                                <option value="bdt"><?php echo _("BDT - Bangladeshi Taka"); ?></option>
-                                                <option value="bgn"><?php echo _("BGN - Bulgarian Lev"); ?></option>
-                                                <option value="bif"><?php echo _("BIF - Burundian Franc"); ?></option>
-                                                <option value="bmd"><?php echo _("BMD - Bermudan Dollar"); ?></option>
-                                                <option value="bnd"><?php echo _("BND - Brunei Dollar"); ?></option>
-                                                <option value="bob"><?php echo _("BOB - Bolivian Boliviano"); ?></option>
-                                                <option value="brl"><?php echo _("BRL - Brazilian Real"); ?></option>
-                                                <option value="bsd"><?php echo _("BSD - Bahamian Dollar"); ?></option>
-                                                <option value="bwp"><?php echo _("BWP - Botswanan Pula"); ?></option>
-                                                <option value="bzd"><?php echo _("BZD - Belize Dollar"); ?></option>
-                                                <option value="cad"><?php echo _("CAD - Canadian Dollar"); ?></option>
-                                                <option value="cdf"><?php echo _("CDF - Congolese Franc"); ?></option>
-                                                <option value="chf"><?php echo _("CHF - Swiss Franc"); ?></option>
-                                                <option value="clp"><?php echo _("CLP - Chilean Peso"); ?></option>
-                                                <option value="cny"><?php echo _("CNY - Chinese Yuan"); ?></option>
-                                                <option value="cop"><?php echo _("COP - Colombian Peso"); ?></option>
-                                                <option value="crc"><?php echo _("CRC - Costa Rican Colón"); ?></option>
-                                                <option value="cve"><?php echo _("CVE - Cape Verdean Escudo"); ?></option>
-                                                <option value="czk"><?php echo _("CZK - Czech Koruna"); ?></option>
-                                                <option value="djf"><?php echo _("DJF - Diboutian Franc"); ?></option>
-                                                <option value="dkk"><?php echo _("DKK - Danish Krone"); ?></option>
-                                                <option value="dop"><?php echo _("DOP - Dominican Peso"); ?></option>
-                                                <option value="dzd"><?php echo _("DZD - Algerian Dinar"); ?></option>
-                                                <option value="egp"><?php echo _("EGP - Egyptian Pound"); ?></option>
-                                                <option value="etb"><?php echo _("ETB - Ethiopian Birr"); ?></option>
-                                                <option value="eur"><?php echo _("EUR - Euro"); ?></option>
-                                                <option value="fjd"><?php echo _("FJD - Fijian Dollar"); ?></option>
-                                                <option value="fkp"><?php echo _("FKP - Falkland Islands Pound"); ?></option>
-                                                <option value="gbp"><?php echo _("GBP - British Pound"); ?></option>
-                                                <option value="gel"><?php echo _("GEL - Georgian Lari"); ?></option>
-                                                <option value="gip"><?php echo _("GIP - Gibraltar Pound"); ?></option>
-                                                <option value="gmd"><?php echo _("GMD - Gambian Dalasi"); ?></option>
-                                                <option value="gnf"><?php echo _("GNF - Guinean Franc"); ?></option>
-                                                <option value="gtq"><?php echo _("GTQ - Guatemalan Quetzal"); ?></option>
-                                                <option value="gyd"><?php echo _("GYD - Guyanaese Dollar"); ?></option>
-                                                <option value="hkd"><?php echo _("HKD - Hong Kong Dollar"); ?></option>
-                                                <option value="hnl"><?php echo _("HNL - Honduran Lempira"); ?></option>
-                                                <option value="hrk"><?php echo _("HRK - Croatian Kuna"); ?></option>
-                                                <option value="htg"><?php echo _("HTG - Haitian Gourde"); ?></option>
-                                                <option value="huf"><?php echo _("HUF - Hungarian Forint"); ?></option>
-                                                <option value="idr"><?php echo _("IDR - Indonesian Rupiah"); ?></option>
-                                                <option value="ils"><?php echo _("ILS - Israeli New Shekel"); ?></option>
-                                                <option value="inr"><?php echo _("INR - Indian Rupee"); ?></option>
-                                                <option value="isk"><?php echo _("ISK - Icelandic Króna"); ?></option>
-                                                <option value="jmd"><?php echo _("JMD - Jamaican Dollar"); ?></option>
-                                                <option value="jpy"><?php echo _("JPY - Japanese Yen"); ?></option>
-                                                <option value="kes"><?php echo _("KES - Kenyan Shilling"); ?></option>
-                                                <option value="kgs"><?php echo _("KGS - Kyrgystani Som"); ?></option>
-                                                <option value="kmf"><?php echo _("KMF - Comorian Franc"); ?></option>
-                                                <option value="krw"><?php echo _("KRW - South Korean Won"); ?></option>
-                                                <option value="kyd"><?php echo _("KYD - Cayman Islands Dollar"); ?></option>
-                                                <option value="kzt"><?php echo _("KZT - Kazakhstani Tenge"); ?></option>
-                                                <option value="lak"><?php echo _("LAK - Laotian Kip"); ?></option>
-                                                <option value="lbp"><?php echo _("LBP - Lebanese Pound"); ?></option>
-                                                <option value="lkr"><?php echo _("LKR - Sri Lankan Rupee"); ?></option>
-                                                <option value="lrd"><?php echo _("LRD - Liberian Dollar"); ?></option>
-                                                <option value="lsl"><?php echo _("LSL - Lesotho Loti"); ?></option>
-                                                <option value="mad"><?php echo _("MAD - Moroccan Dirham"); ?></option>
-                                                <option value="mdl"><?php echo _("MDL - Moldovan Leu"); ?></option>
-                                                <option value="mga"><?php echo _("MGA - Malagasy Ariary"); ?></option>
-                                                <option value="mkd"><?php echo _("MKD - Macedonian Denar"); ?></option>
-                                                <option value="mmk"><?php echo _("MMK - Myanmar Kyat"); ?></option>
-                                                <option value="mnt"><?php echo _("MNT - Mongolian Tugrik"); ?></option>
-                                                <option value="mop"><?php echo _("MOP - Macanese Pataca"); ?></option>
-                                                <option value="mro"><?php echo _("MRO - Mauritanian Ougiuya"); ?></option>
-                                                <option value="mur"><?php echo _("MUR - Mauritian Rupee"); ?></option>
-                                                <option value="mvr"><?php echo _("MVR - Maldivian Rufiyaa"); ?></option>
-                                                <option value="mwk"><?php echo _("MWK - Malawian Kwacha"); ?></option>
-                                                <option value="mxn"><?php echo _("MXN - Mexican Peso"); ?></option>
-                                                <option value="myr"><?php echo _("MYR - Malaysian Ringgit"); ?></option>
-                                                <option value="mzn"><?php echo _("MZN - Mozambican Metical"); ?></option>
-                                                <option value="nad"><?php echo _("NAD - Namibian Dollar"); ?></option>
-                                                <option value="ngn"><?php echo _("NGN - Nigerian Naira"); ?></option>
-                                                <option value="nio"><?php echo _("NIO - Nicoraguan Córdoba"); ?></option>
-                                                <option value="nok"><?php echo _("NOK - Norwegian Krone"); ?></option>
-                                                <option value="npr"><?php echo _("NPR - Nepalese Rupee"); ?></option>
-                                                <option value="nzd"><?php echo _("NZD - New Zealand Dollar"); ?></option>
-                                                <option value="pab"><?php echo _("PAB - Panamanian Balboa"); ?></option>
-                                                <option value="pen"><?php echo _("PEN - Peruvian Sol"); ?></option>
-                                                <option value="pgk"><?php echo _("PGK - Papue New Guinean Kina"); ?></option>
-                                                <option value="php"><?php echo _("PHP - Philippine Peso"); ?></option>
-                                                <option value="pkr"><?php echo _("PKR - Pakistani Rupee"); ?></option>
-                                                <option value="pln"><?php echo _("PLN - Polish Zloty"); ?></option>
-                                                <option value="pyg"><?php echo _("PYG - Paraguayan Guarani"); ?></option>
-                                                <option value="qar"><?php echo _("QAR - Qatari Rial"); ?></option>
-                                                <option value="ron"><?php echo _("RON - Romanian Leu"); ?></option>
-                                                <option value="rsd"><?php echo _("RSD - Serbian Dinar"); ?></option>
-                                                <option value="rub"><?php echo _("RUB - Russian Ruble"); ?></option>
-                                                <option value="rwf"><?php echo _("RWF - Rwandan Franc"); ?></option>
-                                                <option value="sar"><?php echo _("SAR - Saudi Riyal"); ?></option>
-                                                <option value="sbd"><?php echo _("SBD - Solomon Islands Dollar"); ?></option>
-                                                <option value="scr"><?php echo _("SCR - Seychellois Rupee"); ?></option>
-                                                <option value="sek"><?php echo _("SEK - Swedish Krona"); ?></option>
-                                                <option value="sgd"><?php echo _("SGD - Singapore Dollar"); ?></option>
-                                                <option value="shp"><?php echo _("SHP - St. Helena Pound"); ?></option>
-                                                <option value="sll"><?php echo _("SLL - Sierra Leonean Leone"); ?></option>
-                                                <option value="sos"><?php echo _("SOS - Somali Shilling"); ?></option>
-                                                <option value="srd"><?php echo _("SRD - Surinamese Dollar"); ?></option>
-                                                <option value="std"><?php echo _("STD - São Tomé & Príncipe Dobra"); ?></option>
-                                                <option value="svc"><?php echo _("SVC - Salvadoran Colón"); ?></option>
-                                                <option value="szl"><?php echo _("SZL - Swazi Lilangeni"); ?></option>
-                                                <option value="thb"><?php echo _("THB - Thai Baht"); ?></option>
-                                                <option value="tjs"><?php echo _("TJS - Tajikistani Somoni"); ?></option>
-                                                <option value="top"><?php echo _("TOP - Tongan Pa'anga"); ?></option>
-                                                <option value="try"><?php echo _("TRY - Turkish Lira"); ?></option>
-                                                <option value="ttd"><?php echo _("TTD - Trinidad & Tobago Dollar"); ?></option>
-                                                <option value="twd"><?php echo _("TWD - New Taiwan Dollar"); ?></option>
-                                                <option value="tzs"><?php echo _("TZS - Tanzanian Shilling"); ?></option>
-                                                <option value="uah"><?php echo _("UAH - Ukranian Hryvnia"); ?></option>
-                                                <option value="ugx"><?php echo _("UGX - Ugandan Shilling"); ?></option>
-                                                <option value="uyu"><?php echo _("UYU - Uruguayan Peso"); ?></option>
-                                                <option value="uzs"><?php echo _("UZS - Uzbekistani Som"); ?></option>
-                                                <option value="vnd"><?php echo _("VND - Vietnamese Dong"); ?></option>
-                                                <option value="vuv"><?php echo _("VUV - Vanuata Vatu"); ?></option>
-                                                <option value="wst"><?php echo _("WST - Samoan Tala"); ?></option>
-                                                <option value="xaf"><?php echo _("XAF - Central African CFA Franc"); ?></option>
-                                                <option value="xcd"><?php echo _("XCD - East Caribbean Dollar"); ?></option>
-                                                <option value="xof"><?php echo _("XOF - West African CFA Franc"); ?></option>
-                                                <option value="xpf"><?php echo _("XPF - CFP Franc"); ?></option>
-                                                <option value="yer"><?php echo _("YER - Yemeni Rial"); ?></option>
-                                                <option value="zar"><?php echo _("ZAR - South African Rand"); ?></option>
-                                                <option value="zmw"><?php echo _("ZMW - Zambian Kwacha"); ?></option>
+                                                <option value="usd"><?php echo __("USD - US Dollars"); ?></option>
+                                                <option value="aed"><?php echo __("AED - United Areb Emirates Dirham"); ?></option>
+                                                <option value="afn"><?php echo __("AFN - Afghan Afghani"); ?></option>
+                                                <option value="all"><?php echo __("ALL - Albanian Lek"); ?></option>
+                                                <option value="amd"><?php echo __("AMD - Armenian Dram"); ?></option>
+                                                <option value="ang"><?php echo __("ANG - Netherlands Antillean Guilder"); ?></option>
+                                                <option value="aoa"><?php echo __("AOA - Angolan Kwanza"); ?></option>
+                                                <option value="ars"><?php echo __("ARS - Argentine Peso"); ?></option>
+                                                <option value="aud"><?php echo __("AUD - Australian Dollar"); ?></option>
+                                                <option value="awg"><?php echo __("AWG - Aruban Florin"); ?></option>
+                                                <option value="azn"><?php echo __("AZN - Azerbaijani Manat"); ?></option>
+                                                <option value="bam"><?php echo __("BAM - Bosnia-Herzegovina Convertible Mark"); ?></option>
+                                                <option value="bbd"><?php echo __("BBD - Barbadian Dollar"); ?></option>
+                                                <option value="bdt"><?php echo __("BDT - Bangladeshi Taka"); ?></option>
+                                                <option value="bgn"><?php echo __("BGN - Bulgarian Lev"); ?></option>
+                                                <option value="bif"><?php echo __("BIF - Burundian Franc"); ?></option>
+                                                <option value="bmd"><?php echo __("BMD - Bermudan Dollar"); ?></option>
+                                                <option value="bnd"><?php echo __("BND - Brunei Dollar"); ?></option>
+                                                <option value="bob"><?php echo __("BOB - Bolivian Boliviano"); ?></option>
+                                                <option value="brl"><?php echo __("BRL - Brazilian Real"); ?></option>
+                                                <option value="bsd"><?php echo __("BSD - Bahamian Dollar"); ?></option>
+                                                <option value="bwp"><?php echo __("BWP - Botswanan Pula"); ?></option>
+                                                <option value="bzd"><?php echo __("BZD - Belize Dollar"); ?></option>
+                                                <option value="cad"><?php echo __("CAD - Canadian Dollar"); ?></option>
+                                                <option value="cdf"><?php echo __("CDF - Congolese Franc"); ?></option>
+                                                <option value="chf"><?php echo __("CHF - Swiss Franc"); ?></option>
+                                                <option value="clp"><?php echo __("CLP - Chilean Peso"); ?></option>
+                                                <option value="cny"><?php echo __("CNY - Chinese Yuan"); ?></option>
+                                                <option value="cop"><?php echo __("COP - Colombian Peso"); ?></option>
+                                                <option value="crc"><?php echo __("CRC - Costa Rican Colón"); ?></option>
+                                                <option value="cve"><?php echo __("CVE - Cape Verdean Escudo"); ?></option>
+                                                <option value="czk"><?php echo __("CZK - Czech Koruna"); ?></option>
+                                                <option value="djf"><?php echo __("DJF - Diboutian Franc"); ?></option>
+                                                <option value="dkk"><?php echo __("DKK - Danish Krone"); ?></option>
+                                                <option value="dop"><?php echo __("DOP - Dominican Peso"); ?></option>
+                                                <option value="dzd"><?php echo __("DZD - Algerian Dinar"); ?></option>
+                                                <option value="egp"><?php echo __("EGP - Egyptian Pound"); ?></option>
+                                                <option value="etb"><?php echo __("ETB - Ethiopian Birr"); ?></option>
+                                                <option value="eur"><?php echo __("EUR - Euro"); ?></option>
+                                                <option value="fjd"><?php echo __("FJD - Fijian Dollar"); ?></option>
+                                                <option value="fkp"><?php echo __("FKP - Falkland Islands Pound"); ?></option>
+                                                <option value="gbp"><?php echo __("GBP - British Pound"); ?></option>
+                                                <option value="gel"><?php echo __("GEL - Georgian Lari"); ?></option>
+                                                <option value="gip"><?php echo __("GIP - Gibraltar Pound"); ?></option>
+                                                <option value="gmd"><?php echo __("GMD - Gambian Dalasi"); ?></option>
+                                                <option value="gnf"><?php echo __("GNF - Guinean Franc"); ?></option>
+                                                <option value="gtq"><?php echo __("GTQ - Guatemalan Quetzal"); ?></option>
+                                                <option value="gyd"><?php echo __("GYD - Guyanaese Dollar"); ?></option>
+                                                <option value="hkd"><?php echo __("HKD - Hong Kong Dollar"); ?></option>
+                                                <option value="hnl"><?php echo __("HNL - Honduran Lempira"); ?></option>
+                                                <option value="hrk"><?php echo __("HRK - Croatian Kuna"); ?></option>
+                                                <option value="htg"><?php echo __("HTG - Haitian Gourde"); ?></option>
+                                                <option value="huf"><?php echo __("HUF - Hungarian Forint"); ?></option>
+                                                <option value="idr"><?php echo __("IDR - Indonesian Rupiah"); ?></option>
+                                                <option value="ils"><?php echo __("ILS - Israeli New Shekel"); ?></option>
+                                                <option value="inr"><?php echo __("INR - Indian Rupee"); ?></option>
+                                                <option value="isk"><?php echo __("ISK - Icelandic Króna"); ?></option>
+                                                <option value="jmd"><?php echo __("JMD - Jamaican Dollar"); ?></option>
+                                                <option value="jpy"><?php echo __("JPY - Japanese Yen"); ?></option>
+                                                <option value="kes"><?php echo __("KES - Kenyan Shilling"); ?></option>
+                                                <option value="kgs"><?php echo __("KGS - Kyrgystani Som"); ?></option>
+                                                <option value="kmf"><?php echo __("KMF - Comorian Franc"); ?></option>
+                                                <option value="krw"><?php echo __("KRW - South Korean Won"); ?></option>
+                                                <option value="kyd"><?php echo __("KYD - Cayman Islands Dollar"); ?></option>
+                                                <option value="kzt"><?php echo __("KZT - Kazakhstani Tenge"); ?></option>
+                                                <option value="lak"><?php echo __("LAK - Laotian Kip"); ?></option>
+                                                <option value="lbp"><?php echo __("LBP - Lebanese Pound"); ?></option>
+                                                <option value="lkr"><?php echo __("LKR - Sri Lankan Rupee"); ?></option>
+                                                <option value="lrd"><?php echo __("LRD - Liberian Dollar"); ?></option>
+                                                <option value="lsl"><?php echo __("LSL - Lesotho Loti"); ?></option>
+                                                <option value="mad"><?php echo __("MAD - Moroccan Dirham"); ?></option>
+                                                <option value="mdl"><?php echo __("MDL - Moldovan Leu"); ?></option>
+                                                <option value="mga"><?php echo __("MGA - Malagasy Ariary"); ?></option>
+                                                <option value="mkd"><?php echo __("MKD - Macedonian Denar"); ?></option>
+                                                <option value="mmk"><?php echo __("MMK - Myanmar Kyat"); ?></option>
+                                                <option value="mnt"><?php echo __("MNT - Mongolian Tugrik"); ?></option>
+                                                <option value="mop"><?php echo __("MOP - Macanese Pataca"); ?></option>
+                                                <option value="mro"><?php echo __("MRO - Mauritanian Ougiuya"); ?></option>
+                                                <option value="mur"><?php echo __("MUR - Mauritian Rupee"); ?></option>
+                                                <option value="mvr"><?php echo __("MVR - Maldivian Rufiyaa"); ?></option>
+                                                <option value="mwk"><?php echo __("MWK - Malawian Kwacha"); ?></option>
+                                                <option value="mxn"><?php echo __("MXN - Mexican Peso"); ?></option>
+                                                <option value="myr"><?php echo __("MYR - Malaysian Ringgit"); ?></option>
+                                                <option value="mzn"><?php echo __("MZN - Mozambican Metical"); ?></option>
+                                                <option value="nad"><?php echo __("NAD - Namibian Dollar"); ?></option>
+                                                <option value="ngn"><?php echo __("NGN - Nigerian Naira"); ?></option>
+                                                <option value="nio"><?php echo __("NIO - Nicoraguan Córdoba"); ?></option>
+                                                <option value="nok"><?php echo __("NOK - Norwegian Krone"); ?></option>
+                                                <option value="npr"><?php echo __("NPR - Nepalese Rupee"); ?></option>
+                                                <option value="nzd"><?php echo __("NZD - New Zealand Dollar"); ?></option>
+                                                <option value="pab"><?php echo __("PAB - Panamanian Balboa"); ?></option>
+                                                <option value="pen"><?php echo __("PEN - Peruvian Sol"); ?></option>
+                                                <option value="pgk"><?php echo __("PGK - Papue New Guinean Kina"); ?></option>
+                                                <option value="php"><?php echo __("PHP - Philippine Peso"); ?></option>
+                                                <option value="pkr"><?php echo __("PKR - Pakistani Rupee"); ?></option>
+                                                <option value="pln"><?php echo __("PLN - Polish Zloty"); ?></option>
+                                                <option value="pyg"><?php echo __("PYG - Paraguayan Guarani"); ?></option>
+                                                <option value="qar"><?php echo __("QAR - Qatari Rial"); ?></option>
+                                                <option value="ron"><?php echo __("RON - Romanian Leu"); ?></option>
+                                                <option value="rsd"><?php echo __("RSD - Serbian Dinar"); ?></option>
+                                                <option value="rub"><?php echo __("RUB - Russian Ruble"); ?></option>
+                                                <option value="rwf"><?php echo __("RWF - Rwandan Franc"); ?></option>
+                                                <option value="sar"><?php echo __("SAR - Saudi Riyal"); ?></option>
+                                                <option value="sbd"><?php echo __("SBD - Solomon Islands Dollar"); ?></option>
+                                                <option value="scr"><?php echo __("SCR - Seychellois Rupee"); ?></option>
+                                                <option value="sek"><?php echo __("SEK - Swedish Krona"); ?></option>
+                                                <option value="sgd"><?php echo __("SGD - Singapore Dollar"); ?></option>
+                                                <option value="shp"><?php echo __("SHP - St. Helena Pound"); ?></option>
+                                                <option value="sll"><?php echo __("SLL - Sierra Leonean Leone"); ?></option>
+                                                <option value="sos"><?php echo __("SOS - Somali Shilling"); ?></option>
+                                                <option value="srd"><?php echo __("SRD - Surinamese Dollar"); ?></option>
+                                                <option value="std"><?php echo __("STD - São Tomé & Príncipe Dobra"); ?></option>
+                                                <option value="svc"><?php echo __("SVC - Salvadoran Colón"); ?></option>
+                                                <option value="szl"><?php echo __("SZL - Swazi Lilangeni"); ?></option>
+                                                <option value="thb"><?php echo __("THB - Thai Baht"); ?></option>
+                                                <option value="tjs"><?php echo __("TJS - Tajikistani Somoni"); ?></option>
+                                                <option value="top"><?php echo __("TOP - Tongan Pa'anga"); ?></option>
+                                                <option value="try"><?php echo __("TRY - Turkish Lira"); ?></option>
+                                                <option value="ttd"><?php echo __("TTD - Trinidad & Tobago Dollar"); ?></option>
+                                                <option value="twd"><?php echo __("TWD - New Taiwan Dollar"); ?></option>
+                                                <option value="tzs"><?php echo __("TZS - Tanzanian Shilling"); ?></option>
+                                                <option value="uah"><?php echo __("UAH - Ukranian Hryvnia"); ?></option>
+                                                <option value="ugx"><?php echo __("UGX - Ugandan Shilling"); ?></option>
+                                                <option value="uyu"><?php echo __("UYU - Uruguayan Peso"); ?></option>
+                                                <option value="uzs"><?php echo __("UZS - Uzbekistani Som"); ?></option>
+                                                <option value="vnd"><?php echo __("VND - Vietnamese Dong"); ?></option>
+                                                <option value="vuv"><?php echo __("VUV - Vanuata Vatu"); ?></option>
+                                                <option value="wst"><?php echo __("WST - Samoan Tala"); ?></option>
+                                                <option value="xaf"><?php echo __("XAF - Central African CFA Franc"); ?></option>
+                                                <option value="xcd"><?php echo __("XCD - East Caribbean Dollar"); ?></option>
+                                                <option value="xof"><?php echo __("XOF - West African CFA Franc"); ?></option>
+                                                <option value="xpf"><?php echo __("XPF - CFP Franc"); ?></option>
+                                                <option value="yer"><?php echo __("YER - Yemeni Rial"); ?></option>
+                                                <option value="zar"><?php echo __("ZAR - South African Rand"); ?></option>
+                                                <option value="zmw"><?php echo __("ZMW - Zambian Kwacha"); ?></option>
                                             </select>
                                         </div>
                                     </div>
@@ -358,40 +359,40 @@ foreach ($plugins as $result) {
                                         <div class="col-md-12">
                                                 <div class="input-group mb-2 mr-sm-2 mb-sm-0">
                                                 <div class="input-group-addon" id="price-addon"></div>
-                                                <input type="text" id="price-1" onkeyup="checkPrice0();" class="form-control" pattern="\d+" style="padding-left: 1%;" value="0" placeholder="0" title="<?php echo _("Format: 0"); ?>">
-                                                <input type="text" id="price-2" onkeyup="checkPrice1();" class="form-control" pattern="\d+[\.]\d{1}" style="padding-left: 1%;" value="0.0" placeholder="0.0" title="<?php echo _("Format: 0.0"); ?>">
-                                                <input type="tet" id="price-3" onkeyup="checkPrice2();" class="form-control" pattern="\d+[\.]\d{2}" style="padding-left: 1%;" value="0.00" placeholder="0.00" title="<?php echo _("Format: 0.00"); ?>">
+                                                <input type="text" id="price-1" onkeyup="checkPrice0();" class="form-control" pattern="\d+" style="padding-left: 1%;" value="0" placeholder="0" title="<?php echo __("Format: 0"); ?>">
+                                                <input type="text" id="price-2" onkeyup="checkPrice1();" class="form-control" pattern="\d+[\.]\d{1}" style="padding-left: 1%;" value="0.0" placeholder="0.0" title="<?php echo __("Format: 0.0"); ?>">
+                                                <input type="tet" id="price-3" onkeyup="checkPrice2();" class="form-control" pattern="\d+[\.]\d{2}" style="padding-left: 1%;" value="0.00" placeholder="0.00" title="<?php echo __("Format: 0.00"); ?>">
                                             </div>
                                         </div>
                                     </div>
                                    <div class="form-group">
-                                        <label class="col-md-12"><?php echo _("Billing Interval"); ?></label>
+                                        <label class="col-md-12"><?php echo __("Billing Interval"); ?></label>
                                         <div class="col-md-12">
                                             <select class="form-control select2" name="interval">
-                                                <option value="day|1"><?php echo _("Daily"); ?></option>
-                                                <option value="week|1"><?php echo _("Weekly"); ?></option>
-                                                <option value="month|1" selected><?php echo _("Monthly"); ?></option>
-                                                <option value="month|3"><?php echo _("Every 3 Months"); ?></option>
-                                                <option value="month|6"><?php echo _("Every 6 Months"); ?></option>
-                                                <option value="year|1"><?php echo _("Yearly"); ?></option>
+                                                <option value="day|1"><?php echo __("Daily"); ?></option>
+                                                <option value="week|1"><?php echo __("Weekly"); ?></option>
+                                                <option value="month|1" selected><?php echo __("Monthly"); ?></option>
+                                                <option value="month|3"><?php echo __("Every 3 Months"); ?></option>
+                                                <option value="month|6"><?php echo __("Every 6 Months"); ?></option>
+                                                <option value="year|1"><?php echo __("Yearly"); ?></option>
                                             </select>
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-md-12"><?php echo _("Trial (Optional)"); ?></label>
+                                        <label class="col-md-12"><?php echo __("Trial (Optional)"); ?></label>
                                         <div class="col-md-12">
                                                 <div class="input-group mb-2 mr-sm-2 mb-sm-0">
                                                  <input type="text" name="trial" pattern='\d+' class="form-control">
                                                  <div class="input-group-addon">days</div>
                                             </div>
-                                                <small class="form-text text-muted"><?php echo _("Subscriptions to this plan will automatically start with a free trial of this length."); ?></small>
+                                                <small class="form-text text-muted"><?php echo __("Subscriptions to this plan will automatically start with a free trial of this length."); ?></small>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <div class="col-sm-12">
                                             <?php if(isset($mysqldown) && $mysqldown = 'yes') { echo '<span class="d-inline-block" data-container="body" data-toggle="tooltip" title="MySQL Offline">'; } ?>
-                                            <button type="submit" class="btn btn-success" <?php if(isset($mysqldown) && $mysqldown == 'yes') { echo 'disabled'; } ?>><?php echo _("Add Plan"); ?></button><?php if(isset($mysqldown) && $mysqldown == 'yes') { echo '</span>'; } ?> &nbsp;
-                                            <a href="index.php" style="color: inherit;text-decoration: inherit;"><button onclick="loadLoader();" class="btn btn-muted" type="button"><?php echo _("Back"); ?></button></a>
+                                            <button type="submit" class="btn btn-success" <?php if(isset($mysqldown) && $mysqldown == 'yes') { echo 'disabled'; } ?>><?php echo __("Add Plan"); ?></button><?php if(isset($mysqldown) && $mysqldown == 'yes') { echo '</span>'; } ?> &nbsp;
+                                            <a href="index.php" style="color: inherit;text-decoration: inherit;"><button onclick="loadLoader();" class="btn btn-muted" type="button"><?php echo __("Back"); ?></button></a>
                                         </div>
                                     </div>
                                 </form>
@@ -562,16 +563,16 @@ foreach ($plugins as $result) {
                 $('.footable').footable();
             });
             function processLoader(){
-                swal({
-                    title: '<?php echo _("Processing"); ?>',
+                swal.fire({
+                    title: '<?php echo __("Processing"); ?>',
                     text: '',
                     onOpen: function () {
                         swal.showLoading()
                     }
                 })};
             function loadLoader(){
-                swal({
-                    title: '<?php echo _("Loading"); ?>',
+                swal.fire({
+                    title: '<?php echo __("Loading"); ?>',
                     text: '',
                     onOpen: function () {
                         swal.showLoading()
@@ -582,11 +583,16 @@ foreach ($plugins as $result) {
             includeScript();
             
             if(isset($_GET['error']) && $_GET['error'] == "1") {
-                echo "swal({title:'" . $errorcode[1] . "<br><br>" . _("Please try again or contact support.") . "', type:'error'});";
+                echo "swal.fire({title:'" . $errorcode[1]. "', html:'" . __("Please try again or contact support.") . "', icon:'error'});";
             } 
             if(isset($_GET['err']) && $_GET['err'] != "") {
-                echo "swal({title:'Stripe Error: " . $_GET['err'] . "<br><br>" . _("Please try again or contact support.") . "', type:'error'});";
+                echo "swal.fire({title:'Stripe Error: " . $_GET['err'] . "', html:'" . __("Please try again or contact support.") . "', icon:'error'});";
             } 
+            if(isset($_GET['merr']) && $_GET['merr'] != "") {
+                echo " swal.fire({title:'Database Error', html:'" . __("Please try again or contact support.") . "<br><br><span onclick=\"$(\'.errortoggle\').toggle();\" class=\"swal-error-title\">View Error Code <i class=\"errortoggle fa fa-angle-double-right\"></i><i style=\"display:none;\" class=\"errortoggle fa fa-angle-double-down\"></i></span><span class=\"errortoggle\" style=\"display:none;\"><br><br>(MySQL Error: " . $_GET['merr'] . ")</span>', icon:'error'});";
+            } 
+
+           
             ?>
                         document.addEventListener('DOMContentLoaded', function(e) {
                 FormValidation.formValidation(

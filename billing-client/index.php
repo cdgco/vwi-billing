@@ -111,9 +111,10 @@ $customeruname = array_keys($billingcustomers);
 $customerid = array_values($billingcustomers);
 $useremail = $admindata['CONTACT'];
 if(isset($admindata['LANGUAGE'])){ $locale = $ulang[$admindata['LANGUAGE']]; }
-setlocale("LC_CTYPE", $locale); setlocale("LC_MESSAGES", $locale);
-bindtextdomain('messages', '../../locale');
-textdomain('messages');
+_setlocale("LC_CTYPE", $locale); 
+_setlocale("LC_MESSAGES", $locale);
+_bindtextdomain('messages', '../../locale');
+_textdomain('messages');
 
 $searchcustomer = array_search($username, $customeruname);
 if($customeruname[$searchcustomer] == $username && $customerid[$searchcustomer] != '') {
@@ -169,7 +170,7 @@ foreach ($plugins as $result) {
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" type="image/ico" href="../images/<?php echo $cpfavicon; ?>">
-        <title><?php echo $sitetitle; ?> - <?php echo _("Billing"); ?></title>
+        <title><?php echo $sitetitle; ?> - <?php echo __("Billing"); ?></title>
         <link href="../components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="../components/metismenu/dist/metisMenu.min.css" rel="stylesheet">
         <link href="../components/select2/select2.min.css" rel="stylesheet">
@@ -226,7 +227,7 @@ foreach ($plugins as $result) {
                     <ul class="nav navbar-top-links navbar-right pull-right">
                         <li>
                             <form class="app-search m-r-10" id="searchform" action="../../process/search.php" method="get">
-                                <input type="text" placeholder="<?php echo _("Search..."); ?>" class="form-control" name="q"> <a href="javascript:void(0);" onclick="document.getElementById('searchform').submit();"><i class="fa fa-search"></i></a> </form>
+                                <input type="text" placeholder="<?php echo __("Search..."); ?>" class="form-control" name="q"> <a href="javascript:void(0);" onclick="document.getElementById('searchform').submit();"><i class="fa fa-search"></i></a> </form>
                         </li>
                         <li class="dropdown">
                             <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#"><b class="hidden-xs"><?php print_r($displayname); ?></b><span class="caret"></span> </a>
@@ -239,10 +240,10 @@ foreach ($plugins as $result) {
                                     </div>
                                 </li>
                                 <li role="separator" class="divider"></li>
-                                <li><a href="../../profile.php"><i class="ti-home"></i> <?php echo _("My Account"); ?></a></li>
-                                <li><a href="../../profile.php?settings=open"><i class="ti-settings"></i> <?php echo _("Account Settings"); ?></a></li>
+                                <li><a href="../../profile.php"><i class="ti-home"></i> <?php echo __("My Account"); ?></a></li>
+                                <li><a href="../../profile.php?settings=open"><i class="ti-settings"></i> <?php echo __("Account Settings"); ?></a></li>
                                 <li role="separator" class="divider"></li>
-                                <li><a href="../../process/logout.php"><i class="fa fa-power-off"></i> <?php echo _("Logout"); ?></a></li>
+                                <li><a href="../../process/logout.php"><i class="fa fa-power-off"></i> <?php echo __("Logout"); ?></a></li>
                             </ul>
                         </li>
                     </ul>
@@ -256,7 +257,7 @@ foreach ($plugins as $result) {
                                 <i class="ti-menu hidden-xs"></i>
                                 <i class="ti-close visible-xs"></i>
                             </span> 
-                            <span class="hide-menu"><?php echo _("Navigation"); ?></span>
+                            <span class="hide-menu"><?php echo __("Navigation"); ?></span>
                         </h3>  
                     </div>
                     <ul class="nav" id="side-menu">
@@ -272,13 +273,13 @@ foreach ($plugins as $result) {
                 <div class="container-fluid">
                     <div class="row bg-title">
                         <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
-                            <h4 class="page-title"><?php echo _("Billing"); ?></h4>
+                            <h4 class="page-title"><?php echo __("Billing"); ?></h4>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="white-box">
-                                <h3 class="box-title m-b-0"><?php echo _("Subscriptions"); ?></h3><br>
+                                <h3 class="box-title m-b-0"><?php echo __("Subscriptions"); ?></h3><br>
                                 <div class="table-responsive">
                                  <table class="table footable m-b-0" id="cc-table" data-paging="true" data-paging-size="5" data-page-size="5" data-sorting="true">
                                     <thead>
@@ -328,41 +329,41 @@ foreach ($plugins as $result) {
                                                     echo '</td>
                                                     <td>';
                                                     if($cursub[$x1]['cancel_at_period_end'] == 'true'){ 
-                                                        echo '<span class="label label-table label-warning">' . _("Canceled") . '</span>';
+                                                        echo '<span class="label label-table label-warning">' . __("Canceled") . '</span>';
                                                     } else {
                                                 
                                                         if($cursub[$x1]['status'] == 'incomplete'){ 
-                                                            echo '<span class="label label-table label-warning">' . _("Incomplete") . '</span>';
+                                                            echo '<span class="label label-table label-warning">' . __("Incomplete") . '</span>';
                                                         } 
                                                         elseif($cursub[$x1]['status'] == 'incomplete_expired') { 
-                                                                echo '<span class="label label-table label-danger">' . _("Expired") . '</span>';
+                                                                echo '<span class="label label-table label-danger">' . __("Expired") . '</span>';
                                                             } 
                                                         elseif($cursub[$x1]['status'] == 'trialing') { 
-                                                                echo '<span class="label label-table label-info">' . _("Trial") . '</span>';
+                                                                echo '<span class="label label-table label-info">' . __("Trial") . '</span>';
                                                             }
                                                         elseif($cursub[$x1]['status'] == 'active') { 
-                                                                echo '<span class="label label-table label-success">' . _("Active") . '</span>';
+                                                                echo '<span class="label label-table label-success">' . __("Active") . '</span>';
                                                             }
                                                         elseif($cursub[$x1]['status'] == 'past_due') { 
-                                                                echo '<span class="label label-table label-warning">' . _("Past Due") . '</span>';
+                                                                echo '<span class="label label-table label-warning">' . __("Past Due") . '</span>';
                                                             }
                                                         elseif($cursub[$x1]['status'] == 'canceled') { 
-                                                                echo '<span class="label label-table label-danger">' . _("Canceled") . '</span>';
+                                                                echo '<span class="label label-table label-danger">' . __("Canceled") . '</span>';
                                                             }
                                                         elseif($cursub[$x1]['status'] == 'unpaid') { 
-                                                                echo '<span class="label label-table label-danger">' . _("Unpaid") . '</span>';
+                                                                echo '<span class="label label-table label-danger">' . __("Unpaid") . '</span>';
                                                             }
                                                         else { 
-                                                            echo '<span class="label label-table label-danger">' . _("Error") . '</span>';
+                                                            echo '<span class="label label-table label-danger">' . __("Error") . '</span>';
                                                         } 
                                                     }
                                                     echo '</td>
                                                     <td>';
                                                     if($cursub[$x1]['billing'] == 'charge_automatically'){ 
-                                                        echo '<span class="label label-table label-info">' . _("Autopay") . '</span>';
+                                                        echo '<span class="label label-table label-info">' . __("Autopay") . '</span>';
                                                     } 
                                                     elseif($cursub[$x1]['billing'] == 'send_invoice') { 
-                                                            echo '<span class="label label-table label-info">' . _("Manual Payment") . '</span>';
+                                                            echo '<span class="label label-table label-info">' . __("Manual Payment") . '</span>';
                                                         } 
                                                 
                                                     echo '</td>
@@ -390,7 +391,7 @@ foreach ($plugins as $result) {
                                                     <td data-sort-value="' . date("Y-m-j", $cursub[$x1]['created']). '">' . date("F j, Y, g:i a", $cursub[$x1]['created']) . '</td>';
                                                 
                                                     if($cursub[$x1]['cancel_at_period_end'] != 'true' && $cursub[$x1]['status'] != 'canceled') {
-                                                        echo '<td><button onclick="cancelPlan(\'' . $cursub[$x1]['id'] . '\')"type="button" data-toggle="tooltip" data-original-title="' . _("Cancel Subscription") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="fa fa-times"></i></button></td>';
+                                                        echo '<td><button onclick="cancelPlan(\'' . $cursub[$x1]['id'] . '\')"type="button" data-toggle="tooltip" data-original-title="' . __("Cancel Subscription") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="fa fa-times"></i></button></td>';
                                                     }
                                                     echo '</tr>';
                                                 
@@ -403,7 +404,7 @@ foreach ($plugins as $result) {
                                 </div>
                             </div>
                             <div class="white-box">
-                                <h3 class="box-title m-b-0"><?php echo _("Payments"); ?></h3><br>
+                                <h3 class="box-title m-b-0"><?php echo __("Payments"); ?></h3><br>
                                 <div class="table-responsive">
                                 <table class="table footable m-b-0" data-paging="true" data-paging-size="5" data-page-size="5" data-sorting="true">
                                     <thead>
@@ -441,13 +442,13 @@ foreach ($plugins as $result) {
                                                     echo '</td>
                                                     <td>';
                                                     if($customercharge[$x1]['status'] == 'succeeded'){ 
-                                                        echo '<span class="label label-table label-success">' . _("Succeeded") . '</span>';
+                                                        echo '<span class="label label-table label-success">' . __("Succeeded") . '</span>';
                                                     } 
                                                     elseif($customercharge[$x1]['status'] == 'pending') { 
-                                                            echo '<span class="label label-table label-warning">' . _("Pending") . '</span>';
+                                                            echo '<span class="label label-table label-warning">' . __("Pending") . '</span>';
                                                         } 
                                                     else { 
-                                                        echo '<span class="label label-table label-danger">' . _("Failed") . '</span>';
+                                                        echo '<span class="label label-table label-danger">' . __("Failed") . '</span>';
                                                     } 
                                                     echo '</td>
                                                     <td>'.$customercharge[$x1]['description'].'</td>
@@ -478,7 +479,7 @@ foreach ($plugins as $result) {
                                                     echo ' **** ' . $customercharge[$x1]['source']['last4'] . '</td>
                                                     <td data-sort-value="' . date("Y-m-j", $customercharge[$x1]['created']). '">' . date("F j, Y, g:i a", $customercharge[$x1]['created']) . '</td>
                                                     <td>
-                                                        <a target="_blank" href="' . $customercharge[$x1]['receipt_url'] . '"><button type="button" data-toggle="tooltip" data-original-title="' . _("Open Receipt") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="fa fa-external-link"></i></button></a>
+                                                        <a target="_blank" href="' . $customercharge[$x1]['receipt_url'] . '"><button type="button" data-toggle="tooltip" data-original-title="' . __("Open Receipt") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="fa fa-external-link"></i></button></a>
                                                     </td>
                                                     <td>';
                                                     
@@ -508,7 +509,7 @@ foreach ($plugins as $result) {
                                 </div>
                             </div>
                             <div class="white-box">
-                                <h3 class="box-title m-b-0"><?php echo _("Invoices"); ?></h3><br>
+                                <h3 class="box-title m-b-0"><?php echo __("Invoices"); ?></h3><br>
                                 <div class="table-responsive">
                                 <table class="table footable m-b-0" id="cc-table" data-paging="true" data-paging-size="5" data-page-size="5" data-sorting="true">
                                     <thead>
@@ -548,19 +549,19 @@ foreach ($plugins as $result) {
                                                     <td>'.$curinv[$x1]['number'].'</td>
                                                     <td>';
                                                     if($curinv[$x1]['status'] == 'draft'){ 
-                                                        echo '<span class="label label-table label-info">' . _("Draft") . '</span>';
+                                                        echo '<span class="label label-table label-info">' . __("Draft") . '</span>';
                                                     } 
                                                     elseif($curinv[$x1]['status'] == 'open') { 
-                                                            echo '<span class="label label-table label-info">' . _("Open") . '</span>';
+                                                            echo '<span class="label label-table label-info">' . __("Open") . '</span>';
                                                         } 
                                                     elseif($curinv[$x1]['status'] == 'paid') { 
-                                                            echo '<span class="label label-table label-success">' . _("Paid") . '</span>';
+                                                            echo '<span class="label label-table label-success">' . __("Paid") . '</span>';
                                                         }
                                                     elseif($curinv[$x1]['status'] == 'uncollectable') { 
-                                                            echo '<span class="label label-table label-danger">' . _("Uncollectable") . '</span>';
+                                                            echo '<span class="label label-table label-danger">' . __("Uncollectable") . '</span>';
                                                         }
                                                     elseif($curinv[$x1]['status'] == 'void') { 
-                                                            echo '<span class="label label-table label-danger">' . _("Void") . '</span>';
+                                                            echo '<span class="label label-table label-danger">' . __("Void") . '</span>';
                                                         }
                                                 
                                                     echo '</td>
@@ -585,8 +586,8 @@ foreach ($plugins as $result) {
                                                     }
                                                     echo '</td>
                                                     <td>
-                                                        <a target="_blank" href="'.$curinv[$x1]['hosted_invoice_url'].'"><button type="button" data-toggle="tooltip" data-original-title="' . _("Open / Pay Invoice") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="fa fa-external-link"></i></button></a>
-                                                        <a href="'.$curinv[$x1]['invoice_pdf'].'"><button type="button" data-toggle="tooltip" data-original-title="' . _("Download PDF") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="fa fa-download"></i></button></a>
+                                                        <a target="_blank" href="'.$curinv[$x1]['hosted_invoice_url'].'"><button type="button" data-toggle="tooltip" data-original-title="' . __("Open / Pay Invoice") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="fa fa-external-link"></i></button></a>
+                                                        <a href="'.$curinv[$x1]['invoice_pdf'].'"><button type="button" data-toggle="tooltip" data-original-title="' . __("Download PDF") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="fa fa-download"></i></button></a>
  
                                                     </td>
                                                     
@@ -602,9 +603,9 @@ foreach ($plugins as $result) {
                             </div>
                             <div class="white-box">
                                 <ul class="side-icon-text pull-right">
-                                    <li><a href="add/card.php"><span class="circle circle-sm bg-success di" style="padding-top: 11px;"><i class="fa fa-plus"></i></span><span class="resthree"><wrapper class="restwo"><?php echo _("Add "); ?></wrapper><?php echo _("Card"); ?></span></a></li>
+                                    <li><a href="add/card.php"><span class="circle circle-sm bg-success di" style="padding-top: 11px;"><i class="fa fa-plus"></i></span><span class="resthree"><wrapper class="restwo"><?php echo __("Add "); ?></wrapper><?php echo __("Card"); ?></span></a></li>
                                 </ul>
-                                <h3 class="box-title m-b-0"><?php echo _("Cards"); ?></h3><br>
+                                <h3 class="box-title m-b-0"><?php echo __("Cards"); ?></h3><br>
                                 <div class="table-responsive">
                                 <table class="table footable m-b-0" id="cc-table" data-paging="true" data-paging-size="5" data-page-size="5" data-sorting="true">
                                     <thead>
@@ -657,14 +658,14 @@ foreach ($plugins as $result) {
                                                     <td>'.$customercard[$x1]['exp_month'].' / '.$customercard[$x1]['exp_year'].'</td>
                                                     <td>';
                                                     if($currentcustomer['default_source'] == $customercard[$x1]['id']){ 
-                                                            echo '<span class="label label-table label-info">' . _("Default") . '</span>';
+                                                            echo '<span class="label label-table label-info">' . __("Default") . '</span>';
                                                     } 
                                                     echo '</td>
                                                     <td>
-                                                        <a href="edit/card.php?card-id=' . $customercard[$x1]['id'] . '"><button type="button" data-toggle="tooltip" data-original-title="' . _("Edit") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="ti-pencil-alt"></i></button></a>
-                                                        <button onclick="deleteCard(\'' . $customercard[$x1]['id'] . '\')" type="button" data-toggle="tooltip" data-original-title="' . _("Delete") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="fa fa-times"></i></button>';
+                                                        <a href="edit/card.php?card-id=' . $customercard[$x1]['id'] . '"><button type="button" data-toggle="tooltip" data-original-title="' . __("Edit") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="ti-pencil-alt"></i></button></a>
+                                                        <button onclick="deleteCard(\'' . $customercard[$x1]['id'] . '\')" type="button" data-toggle="tooltip" data-original-title="' . __("Delete") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="fa fa-times"></i></button>';
                                                     if($currentcustomer['default_source'] != $customercard[$x1]['id']){ 
-                                                            echo '<button onclick="makeDefault(\'' . $customercard[$x1]['id'] . '\')" type="button" data-toggle="tooltip" data-original-title="' . _("Make Default") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="fa fa-star"></i></button>';
+                                                            echo '<button onclick="makeDefault(\'' . $customercard[$x1]['id'] . '\')" type="button" data-toggle="tooltip" data-original-title="' . __("Make Default") . '" class="btn color-button btn-outline btn-circle btn-md m-r-5"><i class="fa fa-star"></i></button>';
                                                     } 
                                                         
                                                     echo '</td>
@@ -742,8 +743,8 @@ foreach ($plugins as $result) {
             });
             function makeDefault(e){
                 e1 = String(e);
-                swal({
-                    title: '<?php echo _("Processing"); ?>',
+                swal.fire({
+                    title: '<?php echo __("Processing"); ?>',
                     text: '',
                     onOpen: function () {
                         swal.showLoading()
@@ -757,17 +758,17 @@ foreach ($plugins as $result) {
                         success: function(data){
                             swal.close();
                             if(data == '0'){
-                                swal({title:'<?php echo _("Successfully Updated!"); ?>', type:'success', allowOutsideClick:false, allowEscapeKey:false, allowEnterKey:false, onOpen: function () {swal.showLoading()}});
+                                swal.fire({title:'<?php echo __("Successfully Updated!"); ?>', type:'success', allowOutsideClick:false, allowEscapeKey:false, allowEnterKey:false, onOpen: function () {swal.showLoading()}});
                                 window.location="index.php";
                             }
                             else {
-                                swal({title:'<?php echo _("Error Updating Card"); ?>', html:'<?php echo _("Please try again or contact support."); ?> <br><br><span onclick="$(\'.errortoggle\').toggle();" class="swal-error-title">View Error Code <i class="errortoggle fa fa-angle-double-right"></i><i style="display:none;" class="errortoggle fa fa-angle-double-down"></i></span><span class="errortoggle" style="display:none;"><br><br>(Error: ' + data + ')</span>', type:'error'});
+                                swal.fire({title:'<?php echo __("Error Updating Card"); ?>', html:'<?php echo __("Please try again or contact support."); ?> <br><br><span onclick="$(\'.errortoggle\').toggle();" class="swal-error-title">View Error Code <i class="errortoggle fa fa-angle-double-right"></i><i style="display:none;" class="errortoggle fa fa-angle-double-down"></i></span><span class="errortoggle" style="display:none;"><br><br>(Error: ' + data + ')</span>', type:'error'});
                             }
 
                         },
                         error: function(){
                             swal.close();
-                            swal({title:'<?php echo _("Please try again later or contact support."); ?>', type:'error'});
+                            swal.fire({title:'<?php echo __("Please try again later or contact support."); ?>', type:'error'});
                         }  
                     }),
                     function () {},
@@ -778,17 +779,17 @@ foreach ($plugins as $result) {
                 )}
             function deleteCard(e){
                 e1 = String(e);
-                Swal({
-                  title: '<?php echo _("Delete Card?"); ?>',
+                swal.fire({
+                  title: '<?php echo __("Delete Card?"); ?>',
                   type: 'warning',
                   showCancelButton: true,
                   confirmButtonColor: '#3085d6',
                   cancelButtonColor: '#d33',
-                  confirmButtonText: '<?php echo _("Confirm"); ?>'
+                  confirmButtonText: '<?php echo __("Confirm"); ?>'
                 }).then((result) => {
                   if (result.value) {
-                    swal({
-                        title: '<?php echo _("Processing"); ?>',
+                    swal.fire({
+                        title: '<?php echo __("Processing"); ?>',
                         text: '',
                         onOpen: function () {
                             swal.showLoading()
@@ -802,17 +803,17 @@ foreach ($plugins as $result) {
                             success: function(data){
                                 swal.close();
                                 if(data == '0'){
-                                    swal({title:'<?php echo _("Successfully Deleted!"); ?>', type:'success', allowOutsideClick:false, allowEscapeKey:false, allowEnterKey:false, onOpen: function () {swal.showLoading()}});
+                                    swal.fire({title:'<?php echo __("Successfully Deleted!"); ?>', type:'success', allowOutsideClick:false, allowEscapeKey:false, allowEnterKey:false, onOpen: function () {swal.showLoading()}});
                                     window.location="index.php";
                                 }
                                 else {
-                                    swal({title:'<?php echo _("Error Updating Card"); ?>', html:'<?php echo _("Please try again or contact support."); ?> <br><br><span onclick="$(\'.errortoggle\').toggle();" class="swal-error-title">View Error Code <i class="errortoggle fa fa-angle-double-right"></i><i style="display:none;" class="errortoggle fa fa-angle-double-down"></i></span><span class="errortoggle" style="display:none;"><br><br>(Error: ' + data + ')</span>', type:'error'});
+                                    swal.fire({title:'<?php echo __("Error Updating Card"); ?>', html:'<?php echo __("Please try again or contact support."); ?> <br><br><span onclick="$(\'.errortoggle\').toggle();" class="swal-error-title">View Error Code <i class="errortoggle fa fa-angle-double-right"></i><i style="display:none;" class="errortoggle fa fa-angle-double-down"></i></span><span class="errortoggle" style="display:none;"><br><br>(Error: ' + data + ')</span>', type:'error'});
                                 }
 
                             },
                             error: function(){
                                 swal.close();
-                                swal({title:'<?php echo _("Please try again later or contact support."); ?>', type:'error'});
+                                swal.fire({title:'<?php echo __("Please try again later or contact support."); ?>', type:'error'});
                             }  
                         }),
                         function () {},
@@ -825,18 +826,18 @@ foreach ($plugins as $result) {
             }
             function cancelPlan(e){
                 e1 = String(e);
-                Swal({
-                  title: '<?php echo _("Cancel Subscription?"); ?>',
-                  text: '<?php echo _("Your account will be closed at the end of the current billing period unless you subscribe to a new plan before the current billing period ends."); ?>',
+                swal.fire({
+                  title: '<?php echo __("Cancel Subscription?"); ?>',
+                  text: '<?php echo __("Your account will be closed at the end of the current billing period unless you subscribe to a new plan before the current billing period ends."); ?>',
                   type: 'warning',
                   showCancelButton: true,
                   confirmButtonColor: '#3085d6',
                   cancelButtonColor: '#d33',
-                  confirmButtonText: '<?php echo _("Confirm"); ?>'
+                  confirmButtonText: '<?php echo __("Confirm"); ?>'
                 }).then((result) => {
                   if (result.value) {
-                    swal({
-                        title: '<?php echo _("Processing"); ?>',
+                    swal.fire({
+                        title: '<?php echo __("Processing"); ?>',
                         text: '',
                         onOpen: function () {
                             swal.showLoading()
@@ -850,17 +851,17 @@ foreach ($plugins as $result) {
                             success: function(data){
                                 swal.close();
                                 if(data == '0'){
-                                    swal({title:'<?php echo _("Successfully Canceled!"); ?>', type:'success', allowOutsideClick:false, allowEscapeKey:false, allowEnterKey:false, onOpen: function () {swal.showLoading()}});
+                                    swal.fire({title:'<?php echo __("Successfully Canceled!"); ?>', type:'success', allowOutsideClick:false, allowEscapeKey:false, allowEnterKey:false, onOpen: function () {swal.showLoading()}});
                                     window.location="index.php";
                                 }
                                 else {
-                                    swal({title:'<?php echo _("Error Canceling Subscription"); ?>', html:'<?php echo _("Please try again or contact support."); ?> <br><br><span onclick="$(\'.errortoggle\').toggle();" class="swal-error-title">View Error Code <i class="errortoggle fa fa-angle-double-right"></i><i style="display:none;" class="errortoggle fa fa-angle-double-down"></i></span><span class="errortoggle" style="display:none;"><br><br>(Error: ' + data + ')</span>', type:'error'});
+                                    swal.fire({title:'<?php echo __("Error Canceling Subscription"); ?>', html:'<?php echo __("Please try again or contact support."); ?> <br><br><span onclick="$(\'.errortoggle\').toggle();" class="swal-error-title">View Error Code <i class="errortoggle fa fa-angle-double-right"></i><i style="display:none;" class="errortoggle fa fa-angle-double-down"></i></span><span class="errortoggle" style="display:none;"><br><br>(Error: ' + data + ')</span>', type:'error'});
                                 }
 
                             },
                             error: function(){
                                 swal.close();
-                                swal({title:'<?php echo _("Please try again later or contact support."); ?>', type:'error'});
+                                swal.fire({title:'<?php echo __("Please try again later or contact support."); ?>', type:'error'});
                             }  
                         }),
                         function () {},
@@ -876,11 +877,11 @@ foreach ($plugins as $result) {
             includeScript();
 
             if(isset($_GET['a1']) && $_GET['a1'] == "0") {
-                echo "swal({title:'" . _("Successfully Created!") . "', type:'success'});";
+                echo "swal.fire({title:'" . __("Successfully Created!") . "', type:'success'});";
             } 
             
             if(isset($_GET['a1']) && $_GET['a1'] != "0") {
-                echo "swal({title:'" . _("Stripe Processing Error") . "', html:'" . _("Please try again or contact support.") . "<br><br><span onclick=\"$(\'.errortoggle\').toggle();\" class=\"swal-error-title\">View Error <i class=\"errortoggle fa fa-angle-double-right\"></i><i style=\"display:none;\" class=\"errortoggle fa fa-angle-double-down\"></i></span><span class=\"errortoggle\" style=\"display:none;\"><br><br>Stripe Error: " . $_GET['a1'] . "</span>', type:'error'});";
+                echo "swal.fire({title:'" . __("Stripe Processing Error") . "', html:'" . __("Please try again or contact support.") . "<br><br><span onclick=\"$(\'.errortoggle\').toggle();\" class=\"swal-error-title\">View Error <i class=\"errortoggle fa fa-angle-double-right\"></i><i style=\"display:none;\" class=\"errortoggle fa fa-angle-double-down\"></i></span><span class=\"errortoggle\" style=\"display:none;\"><br><br>Stripe Error: " . $_GET['a1'] . "</span>', type:'error'});";
             }
             ?>
         </script>

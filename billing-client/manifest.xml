@@ -16,7 +16,7 @@
     <!-- Hide your plugin from menus? "yes" or "no". -->
     <hide>No</hide>
     <!-- Name as seen in admin plugin list. -->
-    <admin-name>vwi-billing Client Side</admin-name>
+    <admin-name>Billing Client Interface</admin-name>
     <!-- Descriptor for plugin list. -->
     <descriptor>Client side dashboard for vwi-billing</descriptor>
 </plugin>

@@ -122,10 +122,10 @@ $packdata = array_values(json_decode(curl_exec($curl1), true));
 $billingname = array_keys($billingplans);
 $billingdata = array_values($billingplans);
 
-setlocale(LC_CTYPE, $locale);
-setlocale(LC_MESSAGES, $locale);
-bindtextdomain('messages', 'locale');
-textdomain('messages');
+_setlocale(LC_CTYPE, $locale);
+_setlocale(LC_MESSAGES, $locale);
+_bindtextdomain('messages', 'locale');
+_textdomain('messages');
 
 $searchpackage = array_search($_POST['plan'], $billingname);
 if($billingdata[$searchpackage]['NAME'] === $_POST['plan'] && $billingdata[$searchpackage]['DISPLAY'] == 'true') {
@@ -168,7 +168,7 @@ if($billingdata[$searchpackage]['NAME'] === $_POST['plan'] && $billingdata[$sear
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" type="image/png" sizes="16x16" href="../../images/favicon.png">
-        <title><?php echo $sitetitle; ?> - <?php echo _('Register'); ?></title>
+        <title><?php echo $sitetitle; ?> - <?php echo __('Register'); ?></title>
         <link href="../../components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="../../components/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet">
         <link href="../../components/sweetalert2/sweetalert2.min.css" rel="stylesheet">
@@ -213,14 +213,14 @@ if($billingdata[$searchpackage]['NAME'] === $_POST['plan'] && $billingdata[$sear
                 <div class="inner-panel">
                     <a href="javascript:void(0)" class="p-20 di"><img src="../../images/<?php echo $cpicon; ?>" class="logo-1"></a>
                     <div class="lg-content">
-                        <h2><?php echo $sitetitle; ?> <?php echo _('Control Panel'); ?> <br></h2><p><?php require '../../../includes/versioncheck.php'; ?></p>
+                        <h2><?php echo $sitetitle; ?> <?php echo __('Control Panel'); ?> <br></h2><p><?php require '../../../includes/versioncheck.php'; ?></p>
                     </div>
                 </div>
             </div>
 
             <div class="new-login-box">
                 <div class="white-box">
-                    <h3 class="box-title m-b-0"><?php echo _('Sign up for'); ?> <?php echo $sitetitle; ?></h3> <small><?php echo _('Enter your billing info below'); ?></small>
+                    <h3 class="box-title m-b-0"><?php echo __('Sign up for'); ?> <?php echo $sitetitle; ?></h3> <small><?php echo __('Enter your billing info below'); ?></small>
                     <form class="form-horizontal new-lg-form" method="post" id="loginform" action="process.php">
                         <div class="form-group ">
                             <div class="col-xs-12">
@@ -240,10 +240,10 @@ if($billingdata[$searchpackage]['NAME'] === $_POST['plan'] && $billingdata[$sear
                                     <button onclick="processLoader();" class="col-xs-12 btn btn-lg color-button bg-theme center-block" type="submit" style="float: left;">    
                                     <?php 
                                         if(!is_null($currentplan['trial_period_days']) && isset($currentplan['trial_period_days']) && $currentplan['trial_period_days'] != ''){
-                                            echo _('Start ') . $currentplan['trial_period_days'] . _(' Day Trial');
+                                            echo __('Start ') . $currentplan['trial_period_days'] . __(' Day Trial');
                                         }
                                         else {
-                                        echo _('Pay') . ' ';
+                                        echo __('Pay') . ' ';
                                 
                                  if($currentplan['currency'] == "aed" || $currentplan['currency'] == "afn" || $currentplan['currency'] == "dkk" || $currentplan['currency'] == "dzd" || $currentplan['currency'] == "egp" || $currentplan['currency'] == "lbp" || $currentplan['currency'] == "mad" || $currentplan['currency'] == "nok" || $currentplan['currency'] == "qar" || $currentplan['currency'] == "sar" || $currentplan['currency'] == "sek" || $currentplan['currency'] == "yer"){
                                 echo number_format(($currentplan['amount']/100), 2, '.', ' ') . ' ' .  $currencies[$currentplan['currency']];
@@ -264,15 +264,15 @@ if($billingdata[$searchpackage]['NAME'] === $_POST['plan'] && $billingdata[$sear
                         </div>
                         <div class="form-group m-t-20">
                             <div class="col-sm-12">
-                                <button onclick="loadLoader();window.history.go(-1);" class="col-xs-12 center-block btn btn-lg btn-muted" type="button" style="float: right;"><?php echo _('Back'); ?></button>
+                                <button onclick="loadLoader();window.history.go(-1);" class="col-xs-12 center-block btn btn-lg btn-muted" type="button" style="float: right;"><?php echo __('Back'); ?></button>
                             </div>
                         </div>
                                 <span class="help-block" style="font-size: 14px;"><?php 
                                     if(!is_null($currentplan['trial_period_days']) && isset($currentplan['trial_period_days']) && $currentplan['trial_period_days'] != ''){
-                                        echo _('After the ') . $currentplan['trial_period_days'] . _(' day trial period, the provided card will be charged <b>');
+                                        echo __('After the ') . $currentplan['trial_period_days'] . __(' day trial period, the provided card will be charged <b>');
                                         }
                                     else {
-                                        echo _("The provided card will be charged <b>"); 
+                                        echo __("The provided card will be charged <b>"); 
                                         
                                     }
                                       
@@ -297,15 +297,15 @@ if($billingdata[$searchpackage]['NAME'] === $_POST['plan'] && $billingdata[$sear
                                 if ($currentplan['interval_count'] > 1) {
                                     echo 's';
                                 }
-                                echo _('</b> until the account is closed or plan is changed.');
+                                echo __('</b> until the account is closed or plan is changed.');
                                 if(!is_null($currentplan['trial_period_days']) && isset($currentplan['trial_period_days']) && $currentplan['trial_period_days'] != ''){
-                                    echo '<br><br>' . _('You will be charged on ') . '<b>'.date('M d, Y', strtotime("+" . $currentplan['trial_period_days'] . " day")) . '</b>'. _(' unless the account is closed before the specified date.');
+                                    echo '<br><br>' . __('You will be charged on ') . '<b>'.date('M d, Y', strtotime("+" . $currentplan['trial_period_days'] . " day")) . '</b>'. __(' unless the account is closed before the specified date.');
                                         }
                                 ?>
                                 </span><br>  
                         <div class="form-group m-b-0">
                             <div class="col-sm-12 text-center">
-                                <p><?php echo _('Already have an account?'); ?> <a href="../../../login.php" class="text-danger m-l-5"><b><?php echo _('Sign in'); ?></b></a></p>
+                                <p><?php echo __('Already have an account?'); ?> <a href="../../../login.php" class="text-danger m-l-5"><b><?php echo __('Sign in'); ?></b></a></p>
                             </div>
                         </div>
                     </form>
@@ -376,16 +376,16 @@ if($billingdata[$searchpackage]['NAME'] === $_POST['plan'] && $billingdata[$sear
                 form.submit();
             }
             function processLoader(){
-                swal({
-                    title: '<?php echo _("Processing"); ?>',
+                swal.fire({
+                    title: '<?php echo __("Processing"); ?>',
                     text: '',
                     onOpen: function () {
                         swal.showLoading()
                     }
                 })};
             function loadLoader(){
-                swal({
-                    title: '<?php echo _("Loading"); ?>',
+                swal.fire({
+                    title: '<?php echo __("Loading"); ?>',
                     text: '',
                     onOpen: function () {
                         swal.showLoading()
@@ -409,16 +409,16 @@ if($billingdata[$searchpackage]['NAME'] === $_POST['plan'] && $billingdata[$sear
             if($configstyle == '2'){
                 if($warningson == "all"){
                     if(substr(sprintf('%o', fileperms($configlocation)), -4) == '0777') {
-                        echo "toast1({ 
-                                text: '"._("Includes folder has not been secured")."',
+                        echo "toast1.fire({ 
+                                text: '".__("Includes folder has not been secured")."',
                                 type: 'warning'
                             });";
 
                     } 
                     if(isset($mysqldown) && $mysqldown == 'yes') {
-                        echo "toast2({
-                                title: '" . _("Database Error") . "',
-                                text: '" . _("MySQL Server Failed To Connect") . "',
+                        echo "toast2.fire({
+                                title: '" . __("Database Error") . "',
+                                text: '" . __("MySQL Server Failed To Connect") . "',
                                 type: 'error'
                             });";
                     } 
@@ -426,24 +426,24 @@ if($billingdata[$searchpackage]['NAME'] === $_POST['plan'] && $billingdata[$sear
             }
             else {
                 if(substr(sprintf('%o', fileperms($configlocation)), -4) == '0777') {
-                    echo "toast1({ 
-                            text: '"._("Includes folder has not been secured")."',
+                    echo "toast1.fire({ 
+                            text: '".__("Includes folder has not been secured")."',
                             type: 'warning'
                         });";
 
                 } 
                 if(isset($mysqldown) && $mysqldown == 'yes') {
-                    echo "toast2({
-                           title: '" . _("Database Error") . "',
-                            text: '" . _("MySQL Server Failed To Connect") . "',
+                    echo "toast2.fire({
+                           title: '" . __("Database Error") . "',
+                            text: '" . __("MySQL Server Failed To Connect") . "',
                             type: 'error'
                         });";
 
                 }    
             }
             if(!isset($serverconnection)){
-            echo "toast2({
-                    text: '" . _("Failed to connect to server. Please check config.") . "',
+            echo "toast2.fire({
+                    text: '" . __("Failed to connect to server. Please check config.") . "',
                     type: 'error'
             });"; }
             ?>

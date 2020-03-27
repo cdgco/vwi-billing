@@ -68,7 +68,7 @@ else {
         elseif ((time()-filemtime( $co1 . "billingplans.json")) > 1800 || $billingplans != json_decode(file_get_contents( $co1 . 'billingplans.json'), true)) { 
             file_put_contents( $co1 . "billingplans.json",json_encode($billingplans)); 
         }
-        $billingcustomers = array(); $billingresult3=mysqli_query($con,"SELECT PACKAGE,ID,DISPLAY FROM `" . $mysql_table . "billing-plans`");
+        $billingcustomers = array(); $billingresult3=mysqli_query($con,"SELECT username,ID FROM `" . $mysql_table . "billing-customers`");
         while ($burow = mysqli_fetch_assoc($billingresult3)) { $billingcustomers[$burow["username"]] = $burow["ID"]; }
         mysqli_free_result($billingresult3); mysqli_close($con);
         if (!file_exists( $co1 . 'billingcustomers.json' )) { 
@@ -125,12 +125,11 @@ if (isset($_POST['package']) && $_POST['package'] != ''){
             header("Location: add.php?err=" . $err . "&package=" . $_POST['package']);
         }
         else {
-            $r1 = 0;
             $con=mysqli_connect($mysql_server,$mysql_uname,$mysql_pw,$mysql_db);
             $v1 = mysqli_real_escape_string($con, $_POST['package']);
             $v2 = mysqli_real_escape_string($con, $_POST['id']);
             $addtotable= "INSERT INTO `" . $mysql_table . "billing-plans` (PACKAGE, ID) VALUES ('".$v1."','".$v2."') ON DUPLICATE KEY UPDATE ID='".$v2."';";
-            if (mysqli_query($con, $addtotable)) {} else { $r1 = $r1 + 1; }
+            if (mysqli_query($con, $addtotable)) { $r1 = 0; } else { header("Location: add.php?merr=" . mysqli_errno($con) . "&package=" . $_POST['package']); }
             mysqli_close($con);
 
         }

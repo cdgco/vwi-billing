@@ -116,10 +116,10 @@ $packdata = array_values(json_decode(curl_exec($curl1), true));
 $billingname = array_keys($billingplans);
 $billingdata = array_values($billingplans);
 
-setlocale(LC_CTYPE, $locale);
-setlocale(LC_MESSAGES, $locale);
-bindtextdomain('messages', 'locale');
-textdomain('messages');
+_setlocale(LC_CTYPE, $locale);
+_setlocale(LC_MESSAGES, $locale);
+_bindtextdomain('messages', 'locale');
+_textdomain('messages');
 
 ?>
 
@@ -131,7 +131,7 @@ textdomain('messages');
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" type="image/png" sizes="16x16" href="../../images/favicon.png">
-        <title><?php echo $sitetitle; ?> - <?php echo _('Register'); ?></title>
+        <title><?php echo $sitetitle; ?> - <?php echo __('Register'); ?></title>
         <link href="../../components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="../../components/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet">
         <link href="../../components/sweetalert2/sweetalert2.min.css" rel="stylesheet">
@@ -176,33 +176,33 @@ textdomain('messages');
                 <div class="inner-panel">
                     <a href="javascript:void(0)" class="p-20 di"><img src="../../images/<?php echo $cpicon; ?>" class="logo-1"></a>
                     <div class="lg-content">
-                        <h2><?php echo $sitetitle; ?> <?php echo _('Control Panel'); ?> <br></h2><p><?php require '../../../includes/versioncheck.php'; ?></p>
+                        <h2><?php echo $sitetitle; ?> <?php echo __('Control Panel'); ?> <br></h2><p><?php require '../../../includes/versioncheck.php'; ?></p>
                     </div>
                 </div>
             </div>
 
             <div class="new-login-box">
                 <div class="white-box">
-                    <h3 class="box-title m-b-0"><?php echo _('Sign up for'); ?> <?php echo $sitetitle; ?></h3> <small><?php echo _('Enter your details below'); ?></small>
+                    <h3 class="box-title m-b-0"><?php echo __('Sign up for'); ?> <?php echo $sitetitle; ?></h3> <small><?php echo __('Enter your details below'); ?></small>
                     <form class="form-horizontal new-lg-form" method="post" id="loginform" action="pay.php">
                         <div class="form-group ">
                             <div class="col-xs-12">
-                                <input class="form-control" type="text" style="width:49%; float:left;" required="" id="fname" name="fname" required x-autocompletetype="given-name" pattern="^[a-zA-Z][a-zA-Z0-9-_\.]{1,27}$" placeholder="<?php echo _('First Name'); ?>" title="<?php echo _('2 to 28 Letters Only. Apostrophes and hyphens allowed.'); ?>" autocomplete="on"> 
-                                <input class="form-control" type="text" style="width:49%; float:right;" required="" id="lname" name="lname" required x-autocompletetype="family-name" pattern="^[a-zA-Z][a-zA-Z0-9-_\.]{1,27}$" placeholder="<?php echo _('Last Name'); ?>" title="<?php echo _('2 to 28 Letters Only. Apostrophes and hyphens allowed.'); ?>" autocomplete="on"></div>
+                                <input class="form-control" type="text" style="width:49%; float:left;" required="" id="fname" name="fname" required x-autocompletetype="given-name" pattern="^[a-zA-Z][a-zA-Z0-9-_\.]{1,27}$" placeholder="<?php echo __('First Name'); ?>" title="<?php echo __('2 to 28 Letters Only. Apostrophes and hyphens allowed.'); ?>" autocomplete="on"> 
+                                <input class="form-control" type="text" style="width:49%; float:right;" required="" id="lname" name="lname" required x-autocompletetype="family-name" pattern="^[a-zA-Z][a-zA-Z0-9-_\.]{1,27}$" placeholder="<?php echo __('Last Name'); ?>" title="<?php echo __('2 to 28 Letters Only. Apostrophes and hyphens allowed.'); ?>" autocomplete="on"></div>
                         </div>
                         <div class="form-group ">
                             <div class="col-xs-12">
-                                <input class="form-control" type="text" id="email" name="email" x-autocompletetype="email" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,20}$" autocomplete="on" required="" placeholder="<?php echo _('Email'); ?>"> </div>
+                                <input class="form-control" type="text" id="email" name="email" x-autocompletetype="email" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,20}$" autocomplete="on" required="" placeholder="<?php echo __('Email'); ?>"> </div>
                         </div>   
                         <div class="form-group ">
                             <div class="col-xs-12">
-                                <input class="form-control" type="text" id="username" name="username" required autocomplete="on" pattern="^[a-zA-Z][a-zA-Z0-9-_.]{1,27}$" title="<?php echo _('2 to 28 Characters A-Z, 0-9, \'-\' \'.\' and \'_\' Only.'); ?>" placeholder="<?php echo _('Username'); ?>" /> </div>
+                                <input class="form-control" type="text" id="username" name="username" required autocomplete="on" pattern="^[a-zA-Z][a-zA-Z0-9-_.]{1,27}$" title="<?php echo __('2 to 28 Characters A-Z, 0-9, \'-\' \'.\' and \'_\' Only.'); ?>" placeholder="<?php echo __('Username'); ?>" /> </div>
                         </div>       
                         <div class="form-group ">
                             <div class="col-xs-12">
-                                <input class="form-control" type="password" name="password" title="<?php echo _('Minimum 6 Characters: One uppercade letter, lowercase letter and number reuired.'); ?>" id="pass" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$" autocomplete="new-password" required="" placeholder="<?php echo _('Password'); ?>" style="width:49%; float:left;">
+                                <input class="form-control" type="password" name="password" title="<?php echo __('Minimum 6 Characters: One uppercade letter, lowercase letter and number reuired.'); ?>" id="pass" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$" autocomplete="new-password" required="" placeholder="<?php echo __('Password'); ?>" style="width:49%; float:left;">
 
-                                <input class="form-control" type="password" id="cpass" autocomplete="new-password" required="" placeholder="<?php echo _('Confirm Pass'); ?>" style="width:49%; float:right;"></div>
+                                <input class="form-control" type="password" id="cpass" autocomplete="new-password" required="" placeholder="<?php echo __('Confirm Pass'); ?>" style="width:49%; float:right;"></div>
                         </div>
                         <div class="form-group ">
                             <div class="col-xs-12">
@@ -262,12 +262,12 @@ textdomain('messages');
                          
                         <div class="form-group text-center m-t-20">
                             <div class="col-xs-12">
-                                <button class="btn color-button btn-lg btn-block text-uppercase waves-effect waves-light bg-theme" style="border:none;" id="payment-submit" type="submit"><?php echo _('Continue'); ?></button>
+                                <button class="btn color-button btn-lg btn-block text-uppercase waves-effect waves-light bg-theme" style="border:none;" id="payment-submit" type="submit"><?php echo __('Continue'); ?></button>
                             </div>
                         </div>
                         <div class="form-group m-b-0">
                             <div class="col-sm-12 text-center">
-                                <p><?php echo _('Already have an account?'); ?> <a href="../../../login.php" class="text-danger m-l-5"><b><?php echo _('Sign in'); ?></b></a></p>
+                                <p><?php echo __('Already have an account?'); ?> <a href="../../../login.php" class="text-danger m-l-5"><b><?php echo __('Sign in'); ?></b></a></p>
                             </div>
                         </div>
                     </form>
@@ -280,7 +280,7 @@ textdomain('messages');
 
             function validatePassword(){
                 if(password.value != confirm_password.value) {
-                    confirm_password.setCustomValidity("<?php echo _('Passwords do not match'); ?>");
+                    confirm_password.setCustomValidity("<?php echo __('Passwords do not match'); ?>");
                 } else {
                     confirm_password.setCustomValidity('');
                 }
@@ -320,16 +320,16 @@ textdomain('messages');
             if($configstyle == '2'){
                 if($warningson == "all"){
                     if(substr(sprintf('%o', fileperms($configlocation)), -4) == '0777') {
-                        echo "toast1({ 
-                                text: '"._("Includes folder has not been secured")."',
+                        echo "toast1.fire({ 
+                                text: '".__("Includes folder has not been secured")."',
                                 type: 'warning'
                             });";
 
                     } 
                     if(isset($mysqldown) && $mysqldown == 'yes') {
-                        echo "toast2({
-                                title: '" . _("Database Error") . "',
-                                text: '" . _("MySQL Server Failed To Connect") . "',
+                        echo "toast2.fire({
+                                title: '" . __("Database Error") . "',
+                                text: '" . __("MySQL Server Failed To Connect") . "',
                                 type: 'error'
                             });";
                     } 
@@ -337,16 +337,16 @@ textdomain('messages');
             }
             else {
                 if(substr(sprintf('%o', fileperms($configlocation)), -4) == '0777') {
-                    echo "toast1({ 
-                            text: '"._("Includes folder has not been secured")."',
+                    echo "toast1.fire({ 
+                            text: '".__("Includes folder has not been secured")."',
                             type: 'warning'
                         });";
 
                 } 
                 if(isset($mysqldown) && $mysqldown == 'yes') {
-                    echo "toast2({
-                           title: '" . _("Database Error") . "',
-                            text: '" . _("MySQL Server Failed To Connect") . "',
+                    echo "toast2.fire({
+                           title: '" . __("Database Error") . "',
+                            text: '" . __("MySQL Server Failed To Connect") . "',
                             type: 'error'
                         });";
 
@@ -354,20 +354,20 @@ textdomain('messages');
             }
             if(!isset($serverconnection)){
             echo "toast2({
-                    text: '" . _("Failed to connect to server. Please check config.") . "',
+                    text: '" . __("Failed to connect to server. Please check config.") . "',
                     type: 'error'
             });"; }
             if(isset($_GET['error']) && $_GET['error'] == "1") {
-                echo "swal({title:'" . $errorcode[1] . "', html:'" . _("Please try again or contact support.") . "', type:'error'});";
+                echo "swal.fire({title:'" . $errorcode[1] . "', html:'" . __("Please try again or contact support.") . "', type:'error'});";
             }
             if(isset($_GET['error']) && $_GET['error'] == "3") {
-                echo "swal({title:'" . $errorcode[3] . "', html:'" . _("Please try again or contact support.") . "', type:'error'});";
+                echo "swal.fire({title:'" . $errorcode[3] . "', html:'" . __("Please try again or contact support.") . "', type:'error'});";
             }
              if(isset($_GET['stripeerr'])) {
-                echo "swal({title:'" . _("Stripe Processing Error") . "', html:'" . _("Please try again or contact support.") . "<br><br><span onclick=\"$(\'.errortoggle\').toggle();\" class=\"swal-error-title\">View Error <i class=\"errortoggle fa fa-angle-double-right\"></i><i style=\"display:none;\" class=\"errortoggle fa fa-angle-double-down\"></i></span><span class=\"errortoggle\" style=\"display:none;\"><br><br>Stripe Error: " . $_GET['stripeerr'] . "</span>', type:'error'});";
+                echo "swal.fire({title:'" . __("Stripe Processing Error") . "', html:'" . __("Please try again or contact support.") . "<br><br><span onclick=\"$(\'.errortoggle\').toggle();\" class=\"swal-error-title\">View Error <i class=\"errortoggle fa fa-angle-double-right\"></i><i style=\"display:none;\" class=\"errortoggle fa fa-angle-double-down\"></i></span><span class=\"errortoggle\" style=\"display:none;\"><br><br>Stripe Error: " . $_GET['stripeerr'] . "</span>', type:'error'});";
             }
              if(isset($_GET['mysqlerr'])) {
-                echo "swal({title:'" . _("Database Error") . "', html:'" . _("Please try again or contact support.") . "<br><br><span onclick=\"$(\'.errortoggle\').toggle();\" class=\"swal-error-title\">View Error <i class=\"errortoggle fa fa-angle-double-right\"></i><i style=\"display:none;\" class=\"errortoggle fa fa-angle-double-down\"></i></span><span class=\"errortoggle\" style=\"display:none;\"><br><br>MySQL Error: " . $_GET['mysqlerr'] . "</span>', type:'error'});";
+                echo "swal.fire({title:'" . __("Database Error") . "', html:'" . __("Please try again or contact support.") . "<br><br><span onclick=\"$(\'.errortoggle\').toggle();\" class=\"swal-error-title\">View Error <i class=\"errortoggle fa fa-angle-double-right\"></i><i style=\"display:none;\" class=\"errortoggle fa fa-angle-double-down\"></i></span><span class=\"errortoggle\" style=\"display:none;\"><br><br>MySQL Error: " . $_GET['mysqlerr'] . "</span>', type:'error'});";
             }
         
             ?>
