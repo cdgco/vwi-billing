@@ -27,7 +27,7 @@ This plugin is currently under active development and is not able to be installe
  
 
 # Installation / Configuration Process
-/*:
+
 1. Use the included billing.sql file to create the three new tables, 'billing-config', 'billing-plans', and 'billing-customers' within your existing VWI database. 
 
    Note: If you used a table prefix other than 'vwi_' you must change the table names in the billing.sql files to your specified prefix.
@@ -53,7 +53,7 @@ This plugin is currently under active development and is not able to be installe
 3. Upload the 'billing' and billing-client' folders to your VWI 'plugins' folder.
 
 4. Activate the plugin by adding 'billing,billing-client' to your plugins list.
-*/
+
 # Disclaimer
 
 Vesta Web Interface and the VWI-Billing Plugin are licensed under the terms of version 3 of the GNU General Public License as published by the Free Software Foundation.
