@@ -48,3 +48,15 @@ CREATE TABLE IF NOT EXISTS `vwi_billing-plans` (
 
 ALTER TABLE `vwi_billing-plans`
   ADD PRIMARY KEY (`PACKAGE`);
+  
+  /*
+* Table structure for table `vwi_billing-customers`
+*/
+
+CREATE TABLE IF NOT EXISTS `vwi_billing-customers` (
+  `username` varchar(128) CHARACTER SET utf8 NOT NULL,
+  `ID` varchar(128) CHARACTER SET utf8 NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+ALTER TABLE `vwi_billing-customers`
+  ADD PRIMARY KEY (`username`);
