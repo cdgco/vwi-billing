@@ -52,7 +52,7 @@ This plugin is currently under active development and is not able to be installe
     
 3. Upload the 'billing' and billing-client' folders to your VWI 'plugins' folder.
 
-4. Activate the plugin by adding 'billing,billing-client' to your plugins list.
+4. Activate the plugin by adding `billing,billing-client` to your plugins list.
 
 # Disclaimer
 
