@@ -23,6 +23,7 @@ This plugin is currently under active development and is not able to be installe
  - Coupon support
  - Multi tiered pricing for packages (currently only 1 plan per package allowed)
  - Usage based pricing (charge per bandwidth, disk usage, domains used, etc.)
+ - Manually add users to plans
  
 
 # Configuration Process
