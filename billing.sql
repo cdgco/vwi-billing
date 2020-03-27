@@ -43,6 +43,7 @@ ALTER TABLE `vwi_billing-config`
 CREATE TABLE IF NOT EXISTS `vwi_billing-plans` (
   `PACKAGE` varchar(128) CHARACTER SET utf8 NOT NULL,
   `ID` varchar(128) CHARACTER SET utf8 NOT NULL
+  `DISPLAY` varchar(128) CHARACTER SET utf8 NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 ALTER TABLE `vwi_billing-plans`
