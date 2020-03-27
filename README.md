@@ -11,7 +11,7 @@ This plugin is currently under active development and is not able to be installe
  - Provide invoices with purchases
  - Complete Stripe currency support (134 Currencies supported)
  - User Billing Dashboard
- - Register free accounts
+ - Register free / paid accounts
  
  #### Coming Soon:
  - Cron job to check user status
